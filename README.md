@@ -2,9 +2,7 @@
 
 ## Description
 
-Deploy [Fluent Bit](https://fluentbit.io) for log parsing and shipping.  After installing the `fluent-bit` service, the role will download the [couchbase-fluent-bit](https://github.com/couchbase/couchbase-fluent-bit) repo or release to the ansible controller/localhost and copy all of the `conf/*` files to each of the targets.
-
-Review each one of the tasks in [tasks/configure.yml](tasks/configure.yml) for details as to what actions are performed, as some changes have to be made to the containerized conf to work correctly in a non-containerized environment.
+Deploy [Fluent Bit](https://fluentbit.io) for log parsing and shipping.  After installing the `fluent-bit` service, the role will apply a config based on [couchbase-fluent-bit](https://github.com/couchbase/couchbase-fluent-bit) repo.
 
 ## Requirements
 
@@ -31,7 +29,7 @@ It can also be added to a `requirements.yml` file
 
 All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file as well as in table below.
 
-### Fluent Bit Variables 
+### Fluent Bit Variables
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -55,7 +53,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `fluent_bit_mbl_couchbase_rebalance` | false | Memory Buffer Limit for Rebalance log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_xdcr` | false | Memory Buffer Limit for XDCR log parsing, disabled by default. |
 
-### Couchbase Variables 
+### Couchbase Variables
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -71,7 +69,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 
 ## Output Variables
 
-#### Standard Out 
+#### Standard Out
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
