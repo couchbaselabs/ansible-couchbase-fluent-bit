@@ -2,7 +2,7 @@
 - hosts: couchbase
   become: true
   vars:
-    fluent_bit_configure_firewalld: true
+    fluent_bit_configure_firewalld: false
     couchbase_username: Administrator
     coucbhase_password: password
   pre_tasks:
