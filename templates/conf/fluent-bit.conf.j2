@@ -1,0 +1,26 @@
+@include {{ fluent_bit_conf_dir }}/couchbase/service.conf
+
+# We split up the input configuration to simplify reuse in testing and custom configurations (so you don't have to repeat it).
+# Each of the logs should have a tag: couchbase.log.<logname>.
+@include {{ fluent_bit_conf_dir }}/couchbase/input/in-*.conf
+
+# Optionally include this if you want all other logs with a couchbase.raw.log.<logname> tag.
+# Not included by default to keep loading down.
+# @include {{ fluent_bit_conf_dir }}/couchbase/input/ignore-raw-log.conf
+
+# Deal specifically with some log parsing initially
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-logfmt.conf
+
+# Add in common info
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-common-info.conf
+
+# Deal with missing/incorrect level & filename information
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-levels.conf
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-filenames.conf
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-streams.conf
+
+# Optionally include this to get common problems duplicated to a specific stream
+# @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-common-problems.conf
+
+# Output all parsed Couchbase logs by default
+@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf

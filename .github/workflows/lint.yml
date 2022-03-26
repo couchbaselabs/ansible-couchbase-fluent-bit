@@ -1,0 +1,32 @@
+---
+name: Ansible Lint
+
+on:  # yamllint disable-line rule:truthy
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref || 'master' }}
+      # Ansible Lint
+      - name: Ansible Lint
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: "."
+          override-deps: |
+            ansible==2.10
+            ansible-lint==5.3.2
+      # Yaml Lint
+      - name: yaml-lint
+        id: yaml-lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .
+      # Editor Config Lint
+      - name: EditorConfig-Action
+        uses: zbeekman/EditorConfig-Action@master

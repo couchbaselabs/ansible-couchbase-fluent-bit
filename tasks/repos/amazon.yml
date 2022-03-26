@@ -1,0 +1,9 @@
+---
+- name: Add repository (Amazon)
+  yum_repository:
+    name: fluent-bit
+    description: Fluent Bit
+    gpgcheck: true
+    gpgkey: https://packages.fluentbit.io/fluentbit.key
+    enabled: true
+    baseurl: https://packages.fluentbit.io/amazonlinux/2/$basearch/

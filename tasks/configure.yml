@@ -1,0 +1,117 @@
+---
+- name: Make sure Fluent Bit is stopped
+  service:
+    name: fluent-bit
+    state: stopped
+
+- name: Get Fluent Bit Version
+  block:
+    - name: Set the currently installed Fluent Bit Version
+      shell: "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2"
+      args:
+        warn: false
+      register: __fluent_bit_current_version_output
+
+    - name: Set the Fluent Bit Version
+      set_fact:
+        fluent_bit_version: "{{ __fluent_bit_current_version_output.stdout }}"
+
+    - name: Fluent Bit Version
+      debug:
+        msg: "{{ fluent_bit_version }}"
+      tags:
+        - fluent_bit_configure
+
+- name: Setup Fluent Bit Service
+  block:
+    - name: Overwrite Fluent Bit Service
+      template:
+        src: fluent-bit.service.j2
+        dest: "{{ _fluent_bit_systemd_path }}/{{ _fluent_bit_systemd_unit }}"
+        owner: root
+        group: root
+        mode: 0755
+      tags:
+        - fluent_bit_service
+
+    - name: Create the Service Environment File
+      template:
+        src: EnvironmentFile.j2
+        dest: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file }}"
+        owner: root
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0640
+      tags:
+        - fluent_bit_service
+
+- name: Create Fluent Bit couchbase Directory
+  file:
+    path: "{{ fluent_bit_conf_dir }}/couchbase"
+    state: directory
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0755
+
+- name: Create main conf file
+  template:
+    src: "conf/fluent-bit.conf.j2"
+    dest: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0640
+
+- name: Create service, parsers, and streams conf files
+  template:
+    src: "conf/couchbase/{{ item }}.j2"
+    dest: "{{ fluent_bit_conf_dir }}/couchbase/{{ item }}"
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0640
+  with_items:
+    - parsers-couchbase.conf
+    - streams-couchbase.conf
+    - service.conf
+
+- name: Create Fluent Bit couchbase/filter Directory
+  file:
+    path: "{{ fluent_bit_conf_dir }}/couchbase/filter"
+    state: directory
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0755
+
+- name: Create Filter conf files
+  template:
+    src: "{{ item }}"
+    dest: "{{ fluent_bit_conf_dir }}/couchbase/filter/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0640
+  with_fileglob:
+    - ../templates/conf/couchbase/filter/*.j2
+
+# Handle Input
+- include_tasks:
+    file: input.yml
+    apply:
+      become: true
+      tags:
+        - fluent_bit_configure
+
+# Handle Output
+- include_tasks:
+    file: output.yml
+    apply:
+      become: true
+      tags:
+        - fluent_bit_configure
+
+
+# - name: Uncomment filter-common-problems
+#   replace:
+#     path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file}}"
+#     regexp: "# @include {{ fluent_bit_conf_dir }}/couchbase/filter-common-problems.conf"
+#     replace: "@include {{ fluent_bit_conf_dir }}/couchbase/filter-common-problems.conf"
+#   tags:
+#     - fluent_bit_configure
+#     - fluent_bit_include_common_problems

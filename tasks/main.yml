@@ -1,0 +1,94 @@
+---
+- include_tasks:
+    file: preflight.yml
+    apply:
+      become: true
+      tags:
+        - fluent_bit_install
+        - fluent_bit_configure
+        - fluent_bit_run
+
+- include_tasks:
+    file: install.yml
+    apply:
+      become: true
+      tags:
+        - fluent_bit_install
+  when: not __fluent_bit_is_installed.stat.exists
+
+- include_tasks:
+    file: configure.yml
+    apply:
+      become: true
+      tags:
+        - fluent_bit_configure
+  tags:
+    - fluent_bit_configure
+
+- name: Ensure Fluent Bit is enabled on boot
+  become: true
+  systemd:
+    daemon_reload: true
+    name: fluent-bit
+    enabled: true
+    state: started
+  tags:
+    - fluent_bit_install
+    - fluent_bit_configure
+    - fluent_bit_run
+
+# - name: Ensure td-agent-bit permissions are correctly set
+#   become: true
+#   file:
+#     path: "{{ item }}"
+#     state: directory
+#     recurse: true
+#     owner: "{{ fluent_bit_user }}"
+#     group: "{{ fluent_bit_user_group }}"
+#     mode: "0755"
+#   with_items:
+#     - "{{ fluent_bit_conf_dir }}"
+#     - "{{ fluent_bit_conf_dir }}/couchbase"
+#   tags:
+#     - fluent_bit_configure
+#
+# - name: Ensure td-agent-bit is executable
+#   become: true
+#   file:
+#     path: "{{ item }}"
+#     owner: "{{ fluent_bit_user }}"
+#     group: "{{ fluent_bit_user_group }}"
+#     mode: "0755"
+#   with_items:
+#     - "/opt/td-agent-bit"
+#     - "/opt/td-agent-bit/bin"
+#     - "/opt/td-agent-bit/bin/td-agent-bit"
+#   tags:
+#     - fluent_bit_configure
+#
+#
+# - name: Overwrite TD Agent Bit Service
+#   template:
+#     src: td-agent-bit.service.j2
+#     dest: /usr/lib/systemd/system/td-agent-bit.service
+#     owner: "{{ fluent_bit_user }}"
+#     group: "{{ fluent_bit_user_group }}"
+#     mode: "0755"
+#   tags:
+#     - fluent_bit_service
+#
+# - name: Reload systemd and Enable td-agent-bit at startup
+#   systemd:
+#     name: td-agent-bit
+#     enabled: true
+#     daemon_reload: true
+#   tags:
+#     - fluent_bit_service
+#
+# - name: Make sure td-agent-bit is started
+#   service:
+#     name: td-agent-bit
+#     state: started
+#   tags:
+#     - fluent_bit_service
+#

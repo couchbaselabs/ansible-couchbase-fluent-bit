@@ -1,0 +1,9 @@
+---
+- name: Add repository (CentOS/RedHat)
+  yum_repository:
+    name: fluent-bit
+    description: Fluent Bit
+    gpgcheck: true
+    gpgkey: https://packages.fluentbit.io/fluentbit.key
+    enabled: true
+    baseurl: https://packages.fluentbit.io/centos/7/$basearch/

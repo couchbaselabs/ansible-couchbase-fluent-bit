@@ -1,0 +1,8 @@
+---
+_fluent_bit_binary_install_dir: /opt/fluent-bit/bin
+_fluent_bit_systemd_path: /usr/lib/systemd/system/
+_fluent_bit_systemd_unit: fluent-bit.service
+
+_couchbase_fluent_bit_github_org: couchbase
+_couchbase_fluent_bit_github_repo: couchbase-fluent-bit
+_couchbase_fluent_bit_url: "https://github.com/{{ __couchbase_fluent_bit_github_org }}/{{ __couchbase_fluent_bit_github_repo }}"

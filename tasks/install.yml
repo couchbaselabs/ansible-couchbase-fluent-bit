@@ -1,0 +1,73 @@
+---
+- name: Install Fluent Bit agent dependencies (postgresql-libs lua)
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - postgresql-libs
+    - lua
+  tags:
+    - fluent_bit_dependencies
+
+- name: Add user group "{{ fluent_bit_user_group }}"
+  group:
+    name: "{{ fluent_bit_user }}"
+    system: true
+    state: present
+
+- name: Add user "{{ fluent_bit_user }}"
+  user:
+    name: "{{ fluent_bit_user }}"
+    comment: "Fluent Bit Account"
+    groups:
+      - "{{ fluent_bit_user_group }}"
+      - "{{ couchbase_user_group }}"
+    system: true
+    shell: "/usr/sbin/nologin"
+    createhome: false
+
+- name: Include the OS specific repository
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "repos/{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+    - "repos/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "repos/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "repos/{{ ansible_distribution | lower }}.yml"
+    - "repos/{{ ansible_os_family | lower }}.yml"
+
+- name: Install the latest version of Fluent Bit
+  package:
+    name: fluent-bit
+    state: present
+
+- name: Ensure fluent-bit permissions are correctly set
+  become: true
+  file:
+    path: "{{ fluent_bit_conf_dir }}"
+    state: directory
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0755
+  with_items:
+    - "{{ fluent_bit_conf_dir }}"
+    - "{{ _fluent_bit_binary_install_dir }}"
+  tags:
+    - fluent_bit_configure
+
+- name: Make sure Fluent Bit is stopped
+  service:
+    name: fluent-bit
+    state: stopped
+
+- name: Remove storage buffer directory exists
+  file:
+    path: "{{ fluent_bit_storage_buffer_path }}"
+    state: absent
+
+- name: Ensure storage buffer directory exists
+  file:
+    path: "{{ fluent_bit_storage_buffer_path }}"
+    owner: "{{ fluent_bit_user }}"
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0755
+    state: directory

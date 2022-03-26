@@ -1,0 +1,44 @@
+---
+- hosts: couchbase
+  become: true
+  vars:
+    fluent_bit_configure_firewalld: true
+    couchbase_username: Administrator
+    coucbhase_password: password
+  pre_tasks:
+    # pre_tasks happen before roles are executed / applied
+    # if the fluent_bit_configure_firewalld is true, make sure the service is installed before proceeding
+    - name: Make sure firewalld is installed
+      package:
+        name: firewalld
+        state: present
+      when: fluent_bit_configure_firewalld | default(false) == true
+      tags:
+        - fluent_bit_firewalld
+  roles:
+    - couchbaselabs.couchbase_fluent_bit
+  tasks:
+    # tasks happen after roles are executed / applied
+    # if the fluent_bit_configure_firewalld is true, make sure the service is started
+    - name: Make sure firewalld is started
+      service:
+        name: firewalld
+        state: started
+      when: fluent_bit_configure_firewalld | default(false) == true
+      tags:
+        - fluent_bit_firewalld
+    - name: Add port {{ fluent_bit_http_port }} (fluent-bit)
+      ansible.posix.firewalld:
+        port: "{{ fluent_bit_http_port }}/tcp"
+        permanent: true
+        state: enabled
+      when: fluent_bit_configure_firewalld | default(false) == true
+      tags:
+        - fluent_bit_firewalld
+    - name: Make sure firewalld is restarted
+      service:
+        name: firewalld
+        state: restarted
+      when: fluent_bit_configure_firewalld | default(false) == true
+      tags:
+        - fluent_bit_firewalld

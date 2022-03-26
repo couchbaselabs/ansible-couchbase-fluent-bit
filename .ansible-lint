@@ -1,0 +1,13 @@
+---
+skip_list:
+  - '106'
+  - '204'
+  - '208'
+  - 'fqcn-builtins'
+exclude_paths:
+  - ./.github/
+  - ./examples/
+  - ./tasks/configure-old.yml
+parseable: true
+use_default_rules: true
+verbosity: 1

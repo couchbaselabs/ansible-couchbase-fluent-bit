@@ -1,0 +1,108 @@
+---
+# Fluent Bit Variables
+fluent_bit_version:
+fluent_bit_storage_buffer_path: /var/lib/fluent-bit/buffer
+fluent_bit_http_listen: 0.0.0.0
+fluent_bit_http_port: 2020
+fluent_bit_conf_dir: /etc/fluent-bit
+fluent_bit_conf_file: fluent-bit.conf
+fluent_bit_env_file: service.env
+fluent_bit_user: fluent-bit
+fluent_bit_user_group: fluent-bit
+fluent_bit_log_level: warn
+
+# Fluent Bit Couchbase Variables
+couchbase_username: Administrator
+couchbase_password: password
+couchbase_install_dir: /opt/couchbase
+couchbase_cluster_name:      # leave blank to be auto-populated at run-time
+couchbase_server_version:    # leave blank to be auto-populated at run-time
+couchbase_logs_dir: /opt/couchbase/var/lib/couchbase/logs
+couchbase_logs_rebalance_tmp_dir: /opt/couchbase/var/lib/couchbase/logs/rebalance
+couchbase_fluent_bit_conf_version: latest
+couchbase_user_group: couchbase
+couchbase_fluent_bit_source: git
+
+# Which log files to monitor
+couchbase_logs:
+  - audit.log    # in-audit-log.conf
+  - babysitter.log    # in-erlang-multiline-log.conf
+  - couchdb.log    # in-erlang-multiline-log.conf
+  - debug.log    # in-erlang-multiline-log.conf
+  - json_rpc.log    # in-erlang-multiline-log.conf
+  - mapreduce_errors.log    # in-erlang-multiline-log.conf
+  - metakv.log    # in-erlang-multiline-log.conf
+  - ns_couchdb.log    # in-erlang-multiline-log.conf
+  - reports.log    # in-erlang-multiline-log.conf
+  - eventing.log    # in-eventing-fts-log.conf
+  - fts.log    # in-eventing-fts-log.conf
+  - http.log    # real file, http_access.log and http_access_internal.log, in-http-log.conf
+  - indexer.log    # in-indexer-projector.conf
+  - projector.log    # in-indexer-projector.conf
+  - analytics.log    # in-java-log.conf
+  - memcached.log    # in-memcached-log.conf
+  - prometheus.log    # in-prometheus-log.conf
+  - rebalance-report    # in-rebalance-report.conf
+  - xdcr.log    # real file is goxdcr.log, in-xdcr-log.conf
+
+# Fluent Bit tail Memory Buffer Limit, disabled by default
+# Read: https://docs.fluentbit.io/manual/administration/backpressure#mem_buf_limit
+fluent_bit_mbl_couchbase_audit: false
+fluent_bit_mbl_couchbase_erlang: false
+fluent_bit_mbl_couchbase_eventing: false
+fluent_bit_mbl_couchbase_http: false
+fluent_bit_mbl_couchbase_index_projector: false
+fluent_bit_mbl_couchbase_java: false
+fluent_bit_mbl_couchbase_memcached: false
+fluent_bit_mbl_couchbase_prometheus: false
+fluent_bit_mbl_couchbase_rebalance: false
+fluent_bit_mbl_couchbase_xdcr: false
+
+# *************************************
+# *  Output Configuration
+# *************************************
+# Fluent Bit output matchers
+fluent_bit_stdout_match: couchbase.log.*
+
+# loki output
+# reference: https://docs.fluentbit.io/manual/pipeline/outputs/loki
+fluent_bit_loki_enabled: false
+fluent_bit_loki_match: couchbase.log.*
+fluent_bit_loki_host: localhost
+fluent_bit_loki_port: 3100
+fluent_bit_loki_workers: 1
+fluent_bit_loki_http_user: null
+fluent_bit_loki_http_passwd: null
+fluent_bit_loki_tenant_id: null
+fluent_bit_loki_tls: "off"
+fluent_bit_loki_tls_verify: "off"
+
+# splunk output
+# reference: https://docs.fluentbit.io/manual/pipeline/outputs/splunk#configuration-parameters
+fluent_bit_splunk_enabled: false
+fluent_bit_splunk_match: couchbase.log.*
+fluent_bit_splunk_host: localhost
+fluent_bit_splunk_port: 8088
+fluent_bit_splunk_token: null
+fluent_bit_splunk_channel: null
+fluent_bit_splunk_http_user: null
+fluent_bit_splunk_http_passwd: null
+fluent_bit_splunk_tls: "off"
+fluent_bit_splunk_tls_verify: "off"
+fluent_bit_splunk_compress: null
+fluent_bit_splunk_workers: 2
+
+# elasticsearch output
+# reference: https://docs.fluentbit.io/manual/pipeline/outputs/elasticsearch
+fluent_bit_es_enabled: false
+fluent_bit_es_match: couchbase.log.*
+fluent_bit_es_host: localhost
+fluent_bit_es_port: 9200
+fluent_bit_es_index: null
+fluent_bit_es_http_user: null
+fluent_bit_es_http_passwd: null
+
+# calyptia
+fluent_bit_calyptia_enabled: false
+fluent_bit_calyptia_token: null
+fluent_bit_calyptia_store_path: /tmp

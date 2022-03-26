@@ -1,0 +1,72 @@
+# Fluent Bit Settings
+FLUENTBIT_VERSION="{{ fluent_bit_version | default('Unknown') }}"
+FLUENT_BIT_LOG_LEVEL={{ fluent_bit_log_level | default('warn') }}
+STORAGE_BUFFER_PATH={{ fluent_bit_storage_buffer_path | default('/var/lib/fluent-bit') }}
+HTTP_PORT={{ fluent_bit_http_port }}
+
+# Couchbase Settings
+COUCHBASE_CLUSTER_NAME="{{ couchbase_cluster_name | default('Unknown') }}"
+COUCHBASE_SERVER_VERSION={{ couchbase_server_version | default('Unknown') }}
+COUCHBASE_LOGS={{ couchbase_logs_dir | default('/opt/couchbase/var/lib/couchbase/logs') }}
+COUCHBASE_LOGS_REBALANCE_TMP_DIR={{ couchbase_logs_rebalance_tmp_dir | default('/opt/couchbase/var/lib/couchbase/logs/rebalance') }}
+COUCHBASE_FLUENTBIT_VERSION={{ couchbase_fluent_bit_conf_version | default('Unknown') }}
+COUCHBASE_NODE={{ couchbase_node | default(inventory_hostname) }}
+COUCHBASE_SERVICES={{ couchbase_services }}
+
+# Output
+STDOUT_MATCH={{ fluent_bit_stdout_match | default('couchbase.log.*') }}
+
+{% if fluent_bit_loki_enabled %}
+# Loki Env Vars
+LOKI_MATCH={{ fluent_bit_loki_match | default('couchbase.log.*') }}
+LOKI_HOST={{ fluent_bit_loki_host }}
+LOKI_PORT={{ fluent_bit_loki_port | default('3100') }}
+LOKI_TENANT_ID={{ fluent_bit_loki_tenant_id }}
+LOKI_HTTP_USER={{ fluent_bit_loki_http_user }}
+LOKI_HTTP_PASSWD={{ fluent_bit_loki_http_passwd }}
+LOKI_TLS={{ fluent_bit_loki_tls }}
+LOKI_TLS_VERIFY={{ fluent_bit_loki_tls_verify }}
+LOKI_WORKERS={{ fluent_bit_loki_workers | default('1') }}
+{% endif %}
+
+{% if fluent_bit_es_enabled %}
+# Elastichsearch Env Vars
+ES_MATCH={{ fluent_bit_es_match | default('couchbase.log.*') }}
+ES_HOST={{ fluent_bit_es_host }}
+ES_PORT={{ fluent_bit_es_port }}
+ES_INDEX={{ fluent_bit_es_index }}
+ES_HTTP_USER={{ fluent_bit_es_http_user }}
+ES_HTTP_PASSWD={{ fluent_bit_es_http_passwd }}
+{% endif %}
+
+{% if fluent_bit_splunk_enabled %}
+# Splunk Env Vars
+SPLUNK_MATCH={{ fluent_bit_splunk_match | default('couchbase.log.*') }}
+SPLUNK_HOST={{ fluent_bit_splunk_host | default('localhost') }}
+SPLUNK_PORT={{ fluent_bit_splunk_port | default('8088') }}
+SPLUNK_TOKEN={{ fluent_bit_splunk_token }}
+SPLUNK_HTTP_USER={{ fluent_bit_splunk_http_user }}
+SPLUNK_HTTP_PASSWD={{ fluent_bit_splunk_http_passwd }}
+SPLUNK_TLS={{ fluent_bit_splunk_tls | default('off') }}
+SPLUNK_TLS_VERIFY={{ fluent_bit_splunk_tls_verify | default('off') }}
+SPLUNK_COMPRESS={{ fluent_bit_splunk_compress }}
+SPLUNK_CHANNEL={{ fluent_bit_splunk_channel }}
+SPLUNK_WORKERS={{ fluent_bit_splunk_workers | default('2') }}
+{% endif %}
+
+{% if fluent_bit_calyptia_enabled %}
+CALYPTIA_KEY={{ fluent_bit_calyptia_token | default('') | string }}
+CALYPTIA_STORE_PATH={{ fluent_bit_calyptia_store_path | default('/tmp') }}
+{% endif %}
+
+# memory buffer limits
+MBL_AUDIT={{ fluent_bit_mbl_couchbase_audit | default('false') | bool }}
+MBL_ERLANG={{ fluent_bit_mbl_couchbase_erlang | default('false') | bool }}
+MBL_EVENTING={{ fluent_bit_mbl_couchbase_eventing | default('false') | bool }}
+MBL_HTTP={{ fluent_bit_mbl_couchbase_http | default('false') | bool }}
+MBL_INDEX_PROJECTOR={{ fluent_bit_mbl_couchbase_index_projector | default('false') | bool }}
+MBL_JAVA={{ fluent_bit_mbl_couchbase_java | default('false') | bool }}
+MBL_MEMCACHED={{ fluent_bit_mbl_couchbase_memcached | default('false') | bool }}
+MBL_PROMETHEUS={{ fluent_bit_mbl_couchbase_prometheus | default('false') | bool }}
+MBL_REBALANCE={{ fluent_bit_mbl_couchbase_rebalance | default('false') | bool }}
+MBL_XDCR={{ fluent_bit_mbl_couchbase_xdcr | default('false') | bool }}

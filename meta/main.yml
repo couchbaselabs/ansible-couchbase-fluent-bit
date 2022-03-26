@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  author: Aaron Benton
+  description: Installs and Configures Fluent Bit for Couchbase Log Proccessing
+  company: Couchbase
+  license: Apache
+  role_name: couchbaselabs.couchbase_fluent_bit
+  min_ansible_version: 2.10
+  platforms:
+    - name: Amazon
+      versions:
+        - All
+    - name: Ubuntu
+      versions:
+        - bionic
+        - xenial
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - couchbase
+    - fluentbit
+    - logging
+    - logs
