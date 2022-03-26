@@ -2,7 +2,7 @@
 
 ## Description
 
-Deploy [Fluent Bit](https://fluentbit.io) for log parsing and shipping.  After installing the `fluent-bit` service, the role will apply a config based on [couchbase-fluent-bit](https://github.com/couchbase/couchbase-fluent-bit) repo.
+Deploy [Fluent Bit](https://fluentbit.io) for log parsing and shipping.  After installing the `fluent-bit` service, the role will apply a config based on [couchbase-fluent-bit](https://github.com/couchbase/couchbase-fluent-bit) container.
 
 ## Requirements
 
