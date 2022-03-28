@@ -1,5 +1,5 @@
 # Fluent Bit Settings
-FLUENTBIT_VERSION="{{ fluent_bit_version | default('Unknown') }}"
+FLUENTBIT_VERSION="{{ fluent_bit_version | default('Unknown') | trim }}"
 FLUENT_BIT_LOG_LEVEL={{ fluent_bit_log_level | default('warn') }}
 STORAGE_BUFFER_PATH={{ fluent_bit_storage_buffer_path | default('/var/lib/fluent-bit') }}
 HTTP_PORT={{ fluent_bit_http_port }}
@@ -12,6 +12,12 @@ COUCHBASE_LOGS_REBALANCE_TMP_DIR={{ couchbase_logs_rebalance_tmp_dir | default('
 COUCHBASE_FLUENTBIT_VERSION={{ couchbase_fluent_bit_conf_version | default('Unknown') }}
 COUCHBASE_NODE={{ couchbase_node | default(inventory_hostname) }}
 COUCHBASE_SERVICES={{ couchbase_services }}
+
+{% if couchbase_enable_slow_query_logging %}
+# Couchbase Slow Query Env Vars
+CB_USERNAME={{ couchbase_slow_query_username }}
+CB_PASSWORD="{{ couchbase_slow_query_password }}"
+{% endif %}
 
 # Output
 STDOUT_MATCH={{ fluent_bit_stdout_match | default('couchbase.log.*') }}

@@ -90,6 +90,25 @@
   with_fileglob:
     - ../templates/conf/couchbase/filter/*.j2
 
+# Handle Scripts
+- name: Create Scripts Directory
+  block:
+    - name: Create Fluent Bit couchbase/scripts Directory
+      file:
+        path: "{{ fluent_bit_conf_dir }}/couchbase/scripts"
+        state: directory
+        owner: root
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0755
+
+    - name: Copy query-logger script
+      copy:
+        src: conf/couchbase/scripts/query-logger
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/scripts/query-logger"
+        owner: root
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0755
+
 # Handle Input
 - include_tasks:
     file: input.yml
@@ -106,6 +125,13 @@
       tags:
         - fluent_bit_configure
 
+- name: Cleanup Original Files
+  file:
+    path: "{{ fluent_bit_conf_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - parsers.conf
+    - plugins.conf
 
 # - name: Uncomment filter-common-problems
 #   replace:

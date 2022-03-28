@@ -100,3 +100,17 @@
     # We need to make sure we pick up rebalance reports as well which end in .json, all other logs end in .log.
     # https://rubular.com/r/YX94tSKujjnJM1
     Regex ^(?<file_path>.*)/(?<file>.*\.(log|json))(?<file_suffix>\.[\d]+.*)?$
+
+# Handle Slow Query Logs
+# 2022-03-28T21:22:27.738Z [INFO]
+[PARSER]
+    Name         couchbase_slow_query_parser
+    Format       regex
+    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+Z)\s+\[(?<level>\w+)\](?<message>.*)$
+    Time_Key     timestamp
+    Time_Format  %Y-%m-%dT%H:%M:%S.%LZ
+
+# convert message to json
+[PARSER]
+    Name        to_json
+    Format      json

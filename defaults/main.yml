@@ -45,6 +45,11 @@ couchbase_logs:
   - rebalance-report    # in-rebalance-report.conf
   - xdcr.log    # real file is goxdcr.log, in-xdcr-log.conf
 
+couchbase_enable_slow_query_logging: true
+couchbase_slow_query_username: Administrator
+couchbase_slow_query_password: password
+couchbase_slow_query_args:     # any additional args to pass to query-logger, see query-logger --help for available args
+
 # Fluent Bit tail Memory Buffer Limit, disabled by default
 # Read: https://docs.fluentbit.io/manual/administration/backpressure#mem_buf_limit
 fluent_bit_mbl_couchbase_audit: false

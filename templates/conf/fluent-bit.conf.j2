@@ -12,6 +12,7 @@
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-logfmt.conf
 
 # Add in common info
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-slow-query-info.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-common-info.conf
 
 # Deal with missing/incorrect level & filename information

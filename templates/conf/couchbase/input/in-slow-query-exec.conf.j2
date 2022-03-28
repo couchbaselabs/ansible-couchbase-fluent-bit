@@ -1,0 +1,9 @@
+# Execute the Slow Query Script
+[INPUT]
+    Name          exec
+    Alias         slow_query_exec
+    Tag           couchbase.log.slow_query
+    Command       /etc/fluent-bit/couchbase/scripts/query-logger
+    Parser        couchbase_slow_query_parser
+    Interval_Sec  60    # poll every 60 seconds
+    Buf_Size      8mb

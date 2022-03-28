@@ -56,3 +56,13 @@
     - metakv.log
     - ns_couchdb.log
     - reports.log
+
+- name: Include Slow Query Input
+  template:
+    src: "conf/couchbase/input/in-slow-query-exec.conf.j2"
+    dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0640
+  # only include when slow query logging is enabled and and the node is a query node
+  when: couchbase_enable_slow_query_logging and "n1ql" in couchbase_services
