@@ -63,9 +63,20 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `couchbase_cluster_name` | `null` | The name of the Couchbase Cluster, if not specified it will be automatically determined. |
 | `couchbase_server_version` | `null` | The version and build of Couchbase Server, if not set it will automatically be determined. |
 | `couchbase_logs_dir` | /opt/couchbase/var/lib/couchbase/logs | The location of the Couchbase logs directory |
-| `couchbase_logs_rebalance_tmp_dir` | /opt/couchbase/var/lib/couchbase/logs/rebalance | The location of the Couchbase rebalance direcotry |
+| `couchbase_logs_rebalance_tmp_dir` | /opt/couchbase/var/lib/couchbase/logs/rebalance | The location of the Couchbase rebalance directory |
 | `couchbase_user_group` | couchbase | The user group that couchbase is running in to grant access to the Fluent Bit user to read the logs |
 | `couchbase_logs` | <ul><li>audit.log</li><li>babysitter.log</li><li>couchdb.log</li><li>debug.log</li><li>json\_rpc.log</li><li>mapreduce\_errors.log</li><li>metakv.log</li><li>ns\_couchdb.log</li><li>reports.log</li><li>eventing.log</li><li>fts.log</li><li>http.log</li><li>indexer.log</li><li>projector.log</li><li>analytics.log</li><li>memcached.log</li><li>prometheus.log</li><li>rebalance-report</li><li>xdcr.log</li></ul> | List of log files to monitor and process, the default is all |
+
+### Couchbase Slow Query Logging Variables
+
+Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent Bit Exec Plugin](https://docs.fluentbit.io/manual/pipeline/inputs/exec) is used to execute the `query-logger` script at a 1min interval, which will retrieve any new slow queries from `system:completed_requests` on the local node.
+
+| Name           | Default Value | Description                        |
+| -------------- | ------------- | -----------------------------------|
+| `couchbase_enable_slow_query_logging` | true | Whether or not to enable slow query logging |
+| `couchbase_slow_query_username` | Administrator | A Couchbase user with access to query `system:completed_requests` / System Catalogs |
+| `couchbase_slow_query_password` | password | A Couchbase user password with access to query `system:completed_requests` / System Catalogs |
+| `couchbase_slow_query_exec_args` |  | Any additional arguments to pass to the `query-logger`, run `/etc/fluent-bit/couchbase/scripts/query-logger --help` for all available options|
 
 ## Output Variables
 

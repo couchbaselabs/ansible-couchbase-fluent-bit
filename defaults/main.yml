@@ -48,7 +48,7 @@ couchbase_logs:
 couchbase_enable_slow_query_logging: true
 couchbase_slow_query_username: Administrator
 couchbase_slow_query_password: password
-couchbase_slow_query_args:     # any additional args to pass to query-logger, see query-logger --help for available args
+couchbase_slow_query_exec_args:     # any additional args to pass to query-logger, see query-logger --help for available args
 
 # Fluent Bit tail Memory Buffer Limit, disabled by default
 # Read: https://docs.fluentbit.io/manual/administration/backpressure#mem_buf_limit

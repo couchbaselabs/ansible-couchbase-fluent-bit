@@ -57,7 +57,7 @@
     - ns_couchdb.log
     - reports.log
 
-- name: Include Slow Query Input
+- name: Include Slow Query Exec Input
   template:
     src: "conf/couchbase/input/in-slow-query-exec.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"

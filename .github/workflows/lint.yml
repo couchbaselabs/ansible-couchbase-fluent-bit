@@ -11,11 +11,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.ref || 'master' }}
       # Ansible Lint
       - name: Ansible Lint
-        uses: ansible/ansible-lint-action@master
+        uses: ansible/ansible-lint-action@main
         with:
           targets: "."
           override-deps: |
@@ -30,3 +28,8 @@ jobs:
       # Editor Config Lint
       - name: EditorConfig-Action
         uses: zbeekman/EditorConfig-Action@master
+      # Shellcheck
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "./files"

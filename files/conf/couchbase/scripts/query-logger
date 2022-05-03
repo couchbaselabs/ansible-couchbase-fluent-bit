@@ -67,11 +67,11 @@ _setup() {
 
   Example Crontab with Defaults, that logs to a file called /var/log/couchbase/slow-queries.log:
 
-  * * * * * /pathto/query-logger.sh --username admin --password pass >> /var/log/couchbase/slow-queries.log 2>&1
+  * * * * * /pathto/query-logger --username admin --password pass >> /var/log/couchbase/slow-queries.log 2>&1
 
   Example Crontab with flags, that logs to a file called /var/log/couchbase/slow-queries.log:
 
-  * * * * * /pathto/query-logger.sh -u admin -p pass -e statement,namedArgs,positionalArgs >> /var/log/couchbase/slow-queries.log 2>&1
+  * * * * * /pathto/query-logger -u admin -p pass -e statement,namedArgs,positionalArgs >> /var/log/couchbase/slow-queries.log 2>&1
 
   As the log file can grow in size it is important to make sure that it is rotated, logrotate is a standard tool on
   most installations that runs once per day automatically, and can be called directly.
