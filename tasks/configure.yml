@@ -22,6 +22,14 @@
       tags:
         - fluent_bit_configure
 
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: "{{ _fluent_bit_binary_install_dir }}/fluent-bit"
+    dest: "/usr/bin/fluent-bit"
+    owner: root
+    group: root
+    state: link
+
 - name: Setup Fluent Bit Service
   block:
     - name: Overwrite Fluent Bit Service
