@@ -7,7 +7,7 @@
 - name: Get Fluent Bit Version
   block:
     - name: Set the currently installed Fluent Bit Version    # noqa no-changed-when
-      shell: "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2"
+      shell: "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\\n+.+$//'"
       args:
         warn: false
       register: __fluent_bit_current_version_output

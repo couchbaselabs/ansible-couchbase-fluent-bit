@@ -69,6 +69,11 @@ fluent_bit_mbl_couchbase_xdcr: false
 # Fluent Bit output matchers
 fluent_bit_stdout_match: couchbase.log.*
 
+# cbhealthagent output
+fluent_bit_cbhealthagent_enabled: false
+fluent_bit_cbhealthagent_match: couchbase.*
+fluent_bit_cbhealthagent_port: 9084
+
 # loki output
 # reference: https://docs.fluentbit.io/manual/pipeline/outputs/loki
 fluent_bit_loki_enabled: false

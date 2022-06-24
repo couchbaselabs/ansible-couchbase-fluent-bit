@@ -15,6 +15,24 @@
     group: "{{ fluent_bit_user_group }}"
     mode: 0640
 
+- name: Configure cbhealthagent
+  block:
+    - name: Add cbhealthagent to conf
+      lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: present
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+
+    - name: Include cbhealthagent Output conf
+      template:
+        src: "conf/couchbase/output/out-cbhealthagent.conf.j2"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+        owner: root
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0640
+
+  when: fluent_bit_cbhealthagent_enabled
+
 - name: Configure Loki
   block:
     - name: Add Loki to conf

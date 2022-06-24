@@ -22,6 +22,11 @@ CB_PASSWORD="{{ couchbase_slow_query_password }}"
 # Output
 STDOUT_MATCH={{ fluent_bit_stdout_match | default('couchbase.log.*') }}
 
+{% if fluent_bit_cbhealthagent_enabled %}
+CBHEALTHAGENT_MATCH={{ fluent_bit_cbhealthagent_match | default('couchbase.*') }}
+CBHEALTHAGENT_PORT={{ fluent_bit_cbhealthagent_port | default('9092') }}
+{% endif %}
+
 {% if fluent_bit_loki_enabled %}
 # Loki Env Vars
 LOKI_MATCH={{ fluent_bit_loki_match | default('couchbase.log.*') }}
