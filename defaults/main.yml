@@ -19,7 +19,6 @@ couchbase_cluster_name:      # leave blank to be auto-populated at run-time
 couchbase_server_version:    # leave blank to be auto-populated at run-time
 couchbase_logs_dir: /opt/couchbase/var/lib/couchbase/logs
 couchbase_logs_rebalance_tmp_dir: /opt/couchbase/var/lib/couchbase/logs/rebalance
-couchbase_fluent_bit_conf_version: latest
 couchbase_user_group: couchbase
 couchbase_fluent_bit_source: git
 
@@ -71,8 +70,8 @@ fluent_bit_stdout_match: couchbase.log.*
 
 # cbhealthagent output
 fluent_bit_cbhealthagent_enabled: false
-fluent_bit_cbhealthagent_match: couchbase.*
-fluent_bit_cbhealthagent_port: 9084
+fluent_bit_cbhealthagent_match: couchbase.kernel,couchbase.log.*
+fluent_bit_cbhealthagent_log_port: 9084
 
 # loki output
 # reference: https://docs.fluentbit.io/manual/pipeline/outputs/loki

@@ -41,7 +41,6 @@
     - couchbase_server_version
     - couchbase_logs_dir
     - couchbase_logs_rebalance_tmp_dir
-    - couchbase_fluent_bit_conf_version
     - couchbase_user_group
 
 - name: Fail when variables do not have a length
@@ -63,7 +62,6 @@
     - couchbase_install_dir
     - couchbase_logs_dir
     - couchbase_logs_rebalance_tmp_dir
-    - couchbase_fluent_bit_conf_version
     - couchbase_user_group
     - couchbase_fluent_bit_source
 
@@ -102,34 +100,8 @@
   tags:
     - fluent_bit_install
 
-- block:
-    - name: Get the Couchbase Fluent Bit Conf Version if couchbase_fluent_bit_conf_version is set to latest  # noqa 301 303
-      become: false
-      shell: |
-        set -o pipefail && curl -s https://api.github.com/repos/couchbase/couchbase-fluent-bit/releases/latest \
-          | grep tag_name \
-          | cut -d '"' -f 4
-      register: _couchbase_fluent_bit_conf_version_request
-      delegate_to: localhost
-      check_mode: false
-      when: couchbase_fluent_bit_conf_version == 'latest'
-      tags:
-        - fluent_bit_configure
-
-    - name: Set the Couchbase Fluent Bit Conf Version if couchbase_fluent_bit_conf_version is set to latest
-      set_fact:
-        couchbase_fluent_bit_conf_version: "{{ _couchbase_fluent_bit_conf_version_request.stdout }}"
-      when: couchbase_fluent_bit_conf_version == 'latest'
-      tags:
-        - fluent_bit_configure
-
-- name: Couchbase Fluent Bit Conf Version
-  debug:
-    msg: "{{ couchbase_fluent_bit_conf_version }}"
-  tags:
-    - fluent_bit_configure
-
-- block:
+- name: Get Cluster Info
+  block:
     - name: Get the Couchbase Cluster Info
       no_log: true
       uri:

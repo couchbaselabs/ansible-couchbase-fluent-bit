@@ -9,7 +9,6 @@ COUCHBASE_CLUSTER_NAME="{{ couchbase_cluster_name | default('Unknown') }}"
 COUCHBASE_SERVER_VERSION={{ couchbase_server_version | default('Unknown') }}
 COUCHBASE_LOGS={{ couchbase_logs_dir | default('/opt/couchbase/var/lib/couchbase/logs') }}
 COUCHBASE_LOGS_REBALANCE_TMP_DIR={{ couchbase_logs_rebalance_tmp_dir | default('/opt/couchbase/var/lib/couchbase/logs/rebalance') }}
-COUCHBASE_FLUENTBIT_VERSION={{ couchbase_fluent_bit_conf_version | default('Unknown') }}
 COUCHBASE_NODE={{ couchbase_node | default(inventory_hostname) }}
 COUCHBASE_SERVICES={{ couchbase_services }}
 
@@ -24,7 +23,7 @@ STDOUT_MATCH={{ fluent_bit_stdout_match | default('couchbase.log.*') }}
 
 {% if fluent_bit_cbhealthagent_enabled %}
 CBHEALTHAGENT_MATCH={{ fluent_bit_cbhealthagent_match | default('couchbase.*') }}
-CBHEALTHAGENT_PORT={{ fluent_bit_cbhealthagent_port | default('9092') }}
+CBHEALTHAGENT_PORT={{ fluent_bit_cbhealthagent_log_port | default('9092') }}
 {% endif %}
 
 {% if fluent_bit_loki_enabled %}
