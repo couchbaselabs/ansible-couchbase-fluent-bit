@@ -5,7 +5,7 @@ galaxy_info:
   company: Couchbase
   license: Apache
   role_name: couchbaselabs.couchbase_fluent_bit
-  min_ansible_version: 2.10
+  min_ansible_version: "2.10"
   platforms:
     - name: Amazon
       versions:
@@ -20,7 +20,7 @@ galaxy_info:
         - buster
     - name: EL
       versions:
-        - 7
+        - all
   galaxy_tags:
     - couchbase
     - fluentbit

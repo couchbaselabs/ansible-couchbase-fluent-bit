@@ -106,6 +106,7 @@
       ansible.builtin.shell:
         cmd: |
           "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\n+.+$//'"
+      changed_when: false
       register: __fluent_bit_current_version_output
 
     - name: Set fluent-bit Installed Version
@@ -120,12 +121,13 @@
 
 - name: Get Fluent Bit Version from Github
   block:
-    - name: Get the latest published Fluent Bit
+    - name: Get the latest published Fluent Bit # noqa command-instead-of-module
       # this will need to be changed from /releases to /releases/latest once a GA release has been made
-      shell: | # noqa command-instead-of-module
+      shell: |
         curl -s https://api.github.com/repos/{{ _fluent_bit_github_org }}/{{ _fluent_bit_github_repo }}/releases \
           | grep -m 1 tag_name \
           | cut -d '"' -f 4 | cut -c 2-
+      changed_when: false
       register: _fluent_bit_version_request
 
     - name: Set the CMOS Exporter Version
