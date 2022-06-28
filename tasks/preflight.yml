@@ -65,7 +65,6 @@
     - couchbase_logs_dir
     - couchbase_logs_rebalance_tmp_dir
     - fluent_bit_couchbase_user_group
-    - couchbase_fluent_bit_source
 
 - name: Fail when fluent_bit_http_port is not a number
   fail:
