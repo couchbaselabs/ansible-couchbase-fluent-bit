@@ -7,8 +7,6 @@
 - name: Fluent Bit Version
   debug:
     msg: "{{ fluent_bit_version }}"
-  tags:
-    - fluent_bit_configure
 
 - name: Create a symbolic link
   ansible.builtin.file:
@@ -27,8 +25,6 @@
         owner: root
         group: root
         mode: 0755
-      tags:
-        - fluent_bit_service
 
     - name: Create the Service Environment File
       template:
@@ -37,8 +33,6 @@
         owner: root
         group: "{{ fluent_bit_user_group }}"
         mode: 0640
-      tags:
-        - fluent_bit_service
 
 - name: Create Fluent Bit couchbase Directory
   file:
