@@ -4,23 +4,11 @@
     name: fluent-bit
     state: stopped
 
-- name: Get Fluent Bit Version
-  block:
-    - name: Set the currently installed Fluent Bit Version    # noqa no-changed-when
-      shell: "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\\n+.+$//'"
-      args:
-        warn: false
-      register: __fluent_bit_current_version_output
-
-    - name: Set the Fluent Bit Version
-      set_fact:
-        fluent_bit_version: "{{ __fluent_bit_current_version_output.stdout }}"
-
-    - name: Fluent Bit Version
-      debug:
-        msg: "{{ fluent_bit_version }}"
-      tags:
-        - fluent_bit_configure
+- name: Fluent Bit Version
+  debug:
+    msg: "{{ fluent_bit_version }}"
+  tags:
+    - fluent_bit_configure
 
 - name: Create a symbolic link
   ansible.builtin.file:

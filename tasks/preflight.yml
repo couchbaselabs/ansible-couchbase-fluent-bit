@@ -100,17 +100,58 @@
   tags:
     - fluent_bit_install
 
+- name: Install Checks
+  block:
+    - name: Gather currently installed fluent-bit version
+      ansible.builtin.shell:
+        cmd: |
+          "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\n+.+$//'"
+      register: __fluent_bit_current_version_output
+
+    - name: Set fluent-bit Installed Version
+      ansible.builtin.set_fact:
+        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$', '\\1') }}"
+
+    - name: fluent-bit Installed Version
+      ansible.builtin.debug:
+        var: fluent_bit_installed_version
+
+  when: __fluent_bit_is_installed.stat.exists
+
+- name: Get Fluent Bit Version from Github
+  block:
+    - name: Get the latest published Fluent Bit
+      # this will need to be changed from /releases to /releases/latest once a GA release has been made
+      shell: | # noqa command-instead-of-module
+        curl -s https://api.github.com/repos/{{ _fluent_bit_github_org }}/{{ _fluent_bit_github_repo }}/releases \
+          | grep -m 1 tag_name \
+          | cut -d '"' -f 4 | cut -c 2-
+      register: _fluent_bit_version_request
+
+    - name: Set the CMOS Exporter Version
+      set_fact:
+        fluent_bit_version: "{{ _fluent_bit_version_request.stdout | string }}"
+
+- name: Set whether or not to do the install
+  ansible.builtin.set_fact:
+    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version_compare(fluent_bit_version, '<') }}"
+
 - name: Get Cluster Info
   block:
     - name: Get the Couchbase Cluster Info
       no_log: true
       uri:
-        url: http://{{ inventory_hostname }}:8091/pools/default
+        url: http://127.0.0.1:8091/pools/default
         method: GET
         user: "{{ couchbase_username }}"
         password: "{{ couchbase_password }}"
-        timeout: 2
+        timeout: 5
+        status_code:
+          - 200
       register: _results
+      until: _results.status == 200
+      retries: 15
+      delay: 5
       tags:
         - fluent_bit_configure
 
@@ -129,7 +170,7 @@
 
     - name: Set the Couchbase Node from the result of API call
       set_fact:
-        couchbase_node: "{{ _results.json | community.general.json_query('nodes[?thisNode].hostname | [0]') | split(':') | first }}"
+        couchbase_node: "{{ _results.json | community.general.json_query('nodes[?thisNode].hostname | [0]') | regex_replace(':[0-9]+$', '') }}"
       tags:
         - fluent_bit_configure
 
