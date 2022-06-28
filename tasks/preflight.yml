@@ -121,7 +121,7 @@
 
 - name: Get Fluent Bit Version from Github
   block:
-    - name: Get the latest published Fluent Bit # noqa command-instead-of-module
+    - name: Get the latest published Fluent Bit     # noqa command-instead-of-module
       # this will need to be changed from /releases to /releases/latest once a GA release has been made
       shell: |
         curl -s https://api.github.com/repos/{{ _fluent_bit_github_org }}/{{ _fluent_bit_github_repo }}/releases \
