@@ -33,15 +33,17 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
-| `fluent_bit_storage_buffer_path` | /var/lib/fluent-bit/buffer | The filesystem location for Fluent Bit to buffer to if necessary |
-| `fluent_bit_http_listen` | 0.0.0.0 | The address to listen on for HTTP requests, this is primarily used for metrics |
-| `fluent_bit_http_port` | 2020 | The port that Fluent Bit listens for requests on |
-| `fluent_bit_conf_dir` | /etc/fluent-bit | The default configuration directory, as the Fluent Bit is installed via yum this is the default location |
-| `fluent_bit_conf_file` | fluent-bit.conf | The name of the configuration file to use |
-| `fluent_bit_env_file` | service.env | To avoid changing values in the configuration files directly, they are made to use environment variables, with a large number of values it is easier to manage through an environment file. |
-| `fluent_bit_user` | fluent-bit | The name of the Fluent Bit user, this is the username that is configured when the agent is installed through `yum` |
-| `fluent_bit_user_group` | fluent-bit | The name of the Fluent Bit group, this is the group that is configured when the agent is installed through `yum`  |
-| `fluent_bit_log_level` | `warn` | The Fluent Bit agent log level.  Allowed values are: off, error, warn, info, and debug. Values are accumulative, e.g: if 'debug' is set, it will include error, warning, info and debug. |
+| `fluent_bit_storage_buffer_path` | `/var/lib/fluent-bit/buffer` | The filesystem location for Fluent Bit to buffer to if necessary |
+| `fluent_bit_http_listen` | `0.0.0.0` | The address to listen on for HTTP requests, this is primarily used for metrics |
+| `fluent_bit_http_port` | `2020` | The port that Fluent Bit listens for requests on |
+| `fluent_bit_conf_dir` | `/etc/fluent-bit` | The default configuration directory, as the Fluent Bit is installed via yum this is the default location |
+| `fluent_bit_conf_file` | `fluent-bit.conf` | The name of the configuration file to use |
+| `fluent_bit_env_file` | `service.env` | To avoid changing values in the configuration files directly, they are made to use environment variables, with a large number of values it is easier to manage through an environment file. |
+| `fluent_bit_user` | `fluent-bit` | The name of the Fluent Bit user, this is the username that is configured when the agent is installed through `yum` |
+| `fluent_bit_user_group` | `fluent-bit` | The name of the Fluent Bit group, this is the group that is configured when the agent is installed through `yum`  |
+| `fluent_bit_user_shell` | `/usr/sbin/nologin` | By default `/usr/sbin/nologin` is used to prevent the user from logging in, if you're using an existing user account this should be `/bin/bash`   |
+| `fluent_bit_user_createhome` | `false` | Whether or not to create the home directory for the user  |
+| `fluent_bit_log_level` | `info` | The Fluent Bit agent log level.  Allowed values are: off, error, warn, info, and debug. Values are accumulative, e.g: if 'debug' is set, it will include error, warning, info and debug. |
 | `fluent_bit_mbl_couchbase_audit` | false | Memory Buffer Limit for Audit log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_erlang` | false | Memory Buffer Limit for Erlang logs parsing, disabled by default.  |
 | `fluent_bit_mbl_couchbase_eventing` | false | Memory Buffer Limit for Eventing log parsing, disabled by default. |
@@ -57,8 +59,8 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
-| `couchbase_username` | `Administrator` | Couchbase cluster username. This is necessary to get the actual name of the cluster, as it can only be retrieved from ns_server. |
-| `couchbase_password` | `password` | Couchbase cluster password. This is necessary to get the actual name of the cluster, as it can only be retrieved from ns_server. |
+| `couchbase_username` | `Administrator` | Couchbase cluster username. This is necessary to get the actual name of the cluster, as it can only be retrieved from ns_server. This is also used if `couchbase_slow_query_logging` is enabled |
+| `couchbase_password` | `password` | Couchbase cluster password. This is necessary to get the actual name of the cluster, as it can only be retrieved from ns_server.  This is also used if `couchbase_slow_query_logging` is enabled  |
 | `couchbase_install_dir` | `/opt/couchbase` | The Couchbase installation directory. |
 | `couchbase_cluster_name` | `null` | The name of the Couchbase Cluster, if not specified it will be automatically determined. |
 | `couchbase_server_version` | `null` | The version and build of Couchbase Server, if not set it will automatically be determined. |
@@ -74,8 +76,6 @@ Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `couchbase_enable_slow_query_logging` | true | Whether or not to enable slow query logging |
-| `couchbase_slow_query_username` | Administrator | A Couchbase user with access to query `system:completed_requests` / System Catalogs |
-| `couchbase_slow_query_password` | password | A Couchbase user password with access to query `system:completed_requests` / System Catalogs |
 | `couchbase_slow_query_exec_args` |  | Any additional arguments to pass to the `query-logger`, run `/etc/fluent-bit/couchbase/scripts/query-logger --help` for all available options|
 
 ## Output Variables
