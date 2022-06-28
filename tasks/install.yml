@@ -11,7 +11,7 @@
 
 - name: Add user group "{{ fluent_bit_user_group }}"
   group:
-    name: "{{ fluent_bit_user }}"
+    name: "{{ fluent_bit_user_group }}"
     system: true
     state: present
 
@@ -21,7 +21,7 @@
     comment: "Fluent Bit Account"
     groups:
       - "{{ fluent_bit_user_group }}"
-      - "{{ couchbase_user_group }}"
+      - "{{ fluent_bit_couchbase_user_group }}"
     system: true
     shell: "{{ fluent_bit_user_shell }}"
     createhome: "{{ fluent_bit_user_createhome }}"

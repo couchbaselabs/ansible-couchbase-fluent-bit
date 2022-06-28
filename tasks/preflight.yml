@@ -43,7 +43,7 @@
     - couchbase_server_version
     - couchbase_logs_dir
     - couchbase_logs_rebalance_tmp_dir
-    - couchbase_user_group
+    - fluent_bit_couchbase_user_group
 
 - name: Fail when variables do not have a length
   fail:
@@ -64,7 +64,7 @@
     - couchbase_install_dir
     - couchbase_logs_dir
     - couchbase_logs_rebalance_tmp_dir
-    - couchbase_user_group
+    - fluent_bit_couchbase_user_group
     - couchbase_fluent_bit_source
 
 - name: Fail when fluent_bit_http_port is not a number
