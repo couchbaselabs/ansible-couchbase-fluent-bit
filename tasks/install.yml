@@ -23,8 +23,8 @@
       - "{{ fluent_bit_user_group }}"
       - "{{ couchbase_user_group }}"
     system: true
-    shell: "/usr/sbin/nologin"
-    createhome: false
+    shell: "{{ fluent_bit_user_shell }}"
+    createhome: "{{ fluent_bit_user_createhome }}"
 
 - name: Include the OS specific repository
   include_tasks: "{{ item }}"
