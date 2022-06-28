@@ -131,10 +131,7 @@
     - name: Set the CMOS Exporter Version
       set_fact:
         fluent_bit_version: "{{ _fluent_bit_version_request.stdout | string }}"
-
-- name: Set whether or not to do the install
-  ansible.builtin.set_fact:
-    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version_compare(fluent_bit_version, '<') }}"
+  when: fluent_bit_version == 'latest'
 
 - name: Get Cluster Info
   block:
@@ -204,3 +201,11 @@
         msg: "{{ couchbase_services }}"
       tags:
         - fluent_bit_configure
+
+- name: Set whether or not to do the install
+  ansible.builtin.set_fact:
+    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version_compare(fluent_bit_version, '<') }}"
+
+- name: Do Install
+  ansible.builtin.debug:
+    var: __fluent_bit_do_install

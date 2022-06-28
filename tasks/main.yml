@@ -14,7 +14,7 @@
       become: true
       tags:
         - fluent_bit_install
-  when: not __fluent_bit_is_installed.stat.exists
+  when: __fluent_bit_do_install
 
 - include_tasks:
     file: configure.yml
