@@ -14,8 +14,8 @@ COUCHBASE_SERVICES={{ couchbase_services }}
 
 {% if couchbase_enable_slow_query_logging %}
 # Couchbase Slow Query Env Vars
-CB_USERNAME={{ couchbase_slow_query_username }}
-CB_PASSWORD="{{ couchbase_slow_query_password }}"
+CB_USERNAME="{{ couchbase_username }}"
+CB_PASSWORD="{{ couchbase_password }}"
 {% endif %}
 
 # Output
