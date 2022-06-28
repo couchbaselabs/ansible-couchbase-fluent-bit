@@ -1,8 +1,51 @@
-# Ansible Role: couchbaselabs.couchbase_fluent_bit
+# Couchbase Fluent Bit Ansible Role
+
+
+<p align="center">
+
+  <a href="https://github.com/couchbaselabs/ansible-couchbase-fluent-bit/graphs/contributors" alt="Contributors">
+    <img src="https://img.shields.io/github/license/couchbaselabs/ansible-couchbase-fluent-bit" />
+  </a>
+
+  <!--
+  <a href="https://galaxy.ansible.com/couchbaselabs/exporter" alt="Ansible Role">
+    <img src="https://img.shields.io/ansible/role/{roleId}" />
+  </a>
+
+  <a href="https://galaxy.ansible.com/couchbaselabs/exporter" alt="Ansible Quality Score">
+    <img src="https://img.shields.io/ansible/quality/{roleId}" />
+  </a>
+
+  <a href="https://galaxy.ansible.com/couchbaselabs/exporter" alt="Downloads">
+    <img src="https://img.shields.io/ansible/role/d/{roleId}" />
+  </a>
+  -->
+
+  <a href="https://github.com/couchbaselabs/ansible-couchbase-fluent-bit/releases" alt="GitHub tag (latest by date)">
+    <img src="https://img.shields.io/github/v/tag/couchbaselabs/ansible-couchbase-fluent-bit" />
+  </a>
+
+  <a href="https://github.com/couchbaselabs/ansible-couchbase-fluent-bit/actions" alt="GitHub Workflow Status">
+    <img src="https://img.shields.io/github/workflow/status/couchbaselabs/ansible-couchbase-fluent-bit/Lint" />
+  </a>
+
+  <a href="https://github.com/couchbaselabs/ansible-couchbase-fluent-bit/commits/main" alt="GitHub last commit">
+    <img src="https://img.shields.io/github/last-commit/couchbaselabs/ansible-couchbase-fluent-bit" />
+  </a>
+
+  <a href="https://github.com/couchbaselabs/ansible-couchbase-fluent-bit/graphs/contributors" alt="GitHub last commit">
+    <img src="https://img.shields.io/github/contributors/couchbaselabs/ansible-couchbase-fluent-bit" />
+  </a>
+
+</p>
 
 ## Description
 
 Deploy [Fluent Bit](https://fluentbit.io) for log parsing and shipping.  After installing the `fluent-bit` service, the role will apply a config based on [couchbase-fluent-bit](https://github.com/couchbase/couchbase-fluent-bit) container.
+
+## Disclaimer
+
+This ansible role and the sub-components configured are not officially supported under Couchbase Enterprise Subscriptions. Please contact Couchbase on any details for your particular environment. Contents here and sub-components are provided as is, it is maintained through community contributions.  Any issues should be reported as an [Issue](https://github.com/couchbaselabs/ansible-couchbase-cbhealthagent/issues) on Github.  Pull Requests are welcomed!
 
 ## Requirements
 
