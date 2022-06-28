@@ -100,18 +100,23 @@
   register: __fluent_bit_is_installed
   check_mode: false
 
+- name: fluent-bit Exists
+  ansible.builtin.debug:
+    var: __fluent_bit_is_installed.stat.exists
+
 - name: Install Checks
   block:
     - name: Gather currently installed fluent-bit version
-      ansible.builtin.shell:
+      ansible.builtin.command:
         cmd: |
-          "{{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\n+.+$//'"
+          {{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\\n+.+$//'
       changed_when: false
       register: __fluent_bit_current_version_output
+      check_mode: false
 
     - name: Set fluent-bit Installed Version
       ansible.builtin.set_fact:
-        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$', '\\1') }}"
+        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$', '') }}"
 
     - name: fluent-bit Installed Version
       ansible.builtin.debug:
