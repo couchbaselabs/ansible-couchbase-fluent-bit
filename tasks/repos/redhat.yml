@@ -1,5 +1,5 @@
 ---
-- name: Add repository (CentOS)
+- name: Add repository (RedHat)
   yum_repository:
     name: fluent-bit
     description: Fluent Bit
