@@ -1,7 +1,7 @@
 [INPUT]
     Name tail
     Alias audit_tail
-    Path ${COUCHBASE_LOGS}/audit.log
+    Path ${COUCHBASE_AUDIT_LOGS}/audit.log
     Parser couchbase_json_log_nanoseconds
     Refresh_Interval 10
     Skip_Long_Lines On

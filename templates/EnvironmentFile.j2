@@ -8,6 +8,7 @@ HTTP_PORT={{ fluent_bit_http_port }}
 COUCHBASE_CLUSTER_NAME="{{ couchbase_cluster_name | default('Unknown') }}"
 COUCHBASE_SERVER_VERSION={{ couchbase_server_version | default('Unknown') }}
 COUCHBASE_LOGS={{ couchbase_logs_dir | default('/opt/couchbase/var/lib/couchbase/logs') }}
+COUCHBASE_AUDIT_LOGS={{ couchbase_audit_logs_dir | default('/opt/couchbase/var/lib/couchbase/logs') }}
 COUCHBASE_LOGS_REBALANCE_TMP_DIR={{ couchbase_logs_rebalance_tmp_dir | default('/opt/couchbase/var/lib/couchbase/logs/rebalance') }}
 COUCHBASE_NODE={{ couchbase_node | default(inventory_hostname) }}
 COUCHBASE_SERVICES={{ couchbase_services }}

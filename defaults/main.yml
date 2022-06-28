@@ -20,9 +20,9 @@ couchbase_install_dir: /opt/couchbase
 couchbase_cluster_name:      # leave blank to be auto-populated at run-time
 couchbase_server_version:    # leave blank to be auto-populated at run-time
 couchbase_logs_dir: /opt/couchbase/var/lib/couchbase/logs
+couchbase_audit_logs_dir: /opt/couchbase/var/lib/couchbase/logs
 couchbase_logs_rebalance_tmp_dir: /opt/couchbase/var/lib/couchbase/logs/rebalance
 fluent_bit_couchbase_user_group: couchbase
-couchbase_fluent_bit_source: git
 
 # Which log files to monitor
 couchbase_logs:

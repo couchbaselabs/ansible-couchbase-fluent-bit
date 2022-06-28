@@ -63,6 +63,7 @@
     - couchbase_password
     - couchbase_install_dir
     - couchbase_logs_dir
+    - couchbase_audit_logs_dir
     - couchbase_logs_rebalance_tmp_dir
     - fluent_bit_couchbase_user_group
 

@@ -107,9 +107,10 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `couchbase_install_dir` | `/opt/couchbase` | The Couchbase installation directory. |
 | `couchbase_cluster_name` | `null` | The name of the Couchbase Cluster, if not specified it will be automatically determined. |
 | `couchbase_server_version` | `null` | The version and build of Couchbase Server, if not set it will automatically be determined. |
-| `couchbase_logs_dir` | /opt/couchbase/var/lib/couchbase/logs | The location of the Couchbase logs directory |
-| `couchbase_logs_rebalance_tmp_dir` | /opt/couchbase/var/lib/couchbase/logs/rebalance | The location of the Couchbase rebalance directory |
-| `fluent_bit_couchbase_user_group` | couchbase | The user group that couchbase is running in to grant access to the Fluent Bit user to read the logs |
+| `couchbase_logs_dir` | `/opt/couchbase/var/lib/couchbase/logs` | The location of the Couchbase logs directory |
+| `couchbase_audit_logs_dir` | `/opt/couchbase/var/lib/couchbase/logs` | The location of the Couchbase Audit logs directory |
+| `couchbase_logs_rebalance_tmp_dir` | `/opt/couchbase/var/lib/couchbase/logs/rebalance` | The location of the Couchbase rebalance directory |
+| `fluent_bit_couchbase_user_group` | `couchbase` | The user group that couchbase is running in to grant access to the Fluent Bit user to read the logs |
 | `couchbase_logs` | <ul><li>audit.log</li><li>babysitter.log</li><li>couchdb.log</li><li>debug.log</li><li>json\_rpc.log</li><li>mapreduce\_errors.log</li><li>metakv.log</li><li>ns\_couchdb.log</li><li>reports.log</li><li>eventing.log</li><li>fts.log</li><li>http.log</li><li>indexer.log</li><li>projector.log</li><li>analytics.log</li><li>memcached.log</li><li>prometheus.log</li><li>rebalance-report</li><li>xdcr.log</li></ul> | List of log files to monitor and process, the default is all |
 
 ### Couchbase Slow Query Logging Variables
