@@ -13,6 +13,8 @@
     - fluent_bit_env_file
     - fluent_bit_user
     - fluent_bit_user_group
+    - fluent_bit_user_shell
+    - fluent_bit_user_createhome
     - fluent_bit_log_level
     - fluent_bit_stdout_match
     - fluent_bit_loki_match
@@ -97,8 +99,6 @@
     path: "{{ _fluent_bit_binary_install_dir }}/fluent-bit"
   register: __fluent_bit_is_installed
   check_mode: false
-  tags:
-    - fluent_bit_install
 
 - name: Install Checks
   block:
@@ -149,58 +149,40 @@
       until: _results.status == 200
       retries: 15
       delay: 5
-      tags:
-        - fluent_bit_configure
 
     - name: Set the Couchbase Cluster Name from the result of API call
       set_fact:
         couchbase_cluster_name: "{{ _results.json.clusterName }}"
       when: not couchbase_cluster_name
-      tags:
-        - fluent_bit_configure
 
     - name: Couchbase Cluster Name
       debug:
         msg: "{{ couchbase_cluster_name }}"
-      tags:
-        - fluent_bit_configure
 
     - name: Set the Couchbase Node from the result of API call
       set_fact:
         couchbase_node: "{{ _results.json | community.general.json_query('nodes[?thisNode].hostname | [0]') | regex_replace(':[0-9]+$', '') }}"
-      tags:
-        - fluent_bit_configure
 
     - name: Couchbase Node Name
       debug:
         msg: "{{ couchbase_node }}"
-      tags:
-        - fluent_bit_configure
 
     - name: Set the Couchbase Server Version from the result of API call
       set_fact:
         couchbase_server_version: "{{ _results.json | community.general.json_query('nodes[?thisNode].version | [0]') }}"
       when: not couchbase_server_version
-      tags:
-        - fluent_bit_configure
 
     - name: Couchbase Server Version
       debug:
         msg: "{{ couchbase_server_version }}"
-      tags:
-        - fluent_bit_configure
 
     - name: Set the Couchbase Services from the result of API call
       set_fact:
         couchbase_services: "{{ _results.json | community.general.json_query('nodes[?thisNode].services | [0]') | join(',') }}"
-      tags:
-        - fluent_bit_configure
 
     - name: Couchbase Services
       debug:
         msg: "{{ couchbase_services }}"
-      tags:
-        - fluent_bit_configure
 
 - name: Set whether or not to do the install
   ansible.builtin.set_fact:
