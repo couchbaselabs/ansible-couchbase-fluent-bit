@@ -6,8 +6,6 @@
   with_items:
     - postgresql-libs
     - lua
-  tags:
-    - fluent_bit_dependencies
 
 - name: Add user group "{{ fluent_bit_user_group }}"
   group:
@@ -25,6 +23,7 @@
     system: true
     shell: "{{ fluent_bit_user_shell }}"
     createhome: "{{ fluent_bit_user_createhome }}"
+  when: fluent_bit_user != 'root'
 
 - name: Include the OS specific repository
   include_tasks: "{{ item }}"
@@ -51,8 +50,6 @@
   with_items:
     - "{{ fluent_bit_conf_dir }}"
     - "{{ _fluent_bit_binary_install_dir }}"
-  tags:
-    - fluent_bit_configure
 
 - name: Make sure Fluent Bit is stopped
   service:

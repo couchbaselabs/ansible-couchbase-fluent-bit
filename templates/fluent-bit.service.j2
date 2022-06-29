@@ -8,8 +8,11 @@ After=local-fs.target
 
 [Service]
 Type=simple
-User={{ fluent_bit_user | default('fluent-bit') }}
-Group={{ fluent_bit_group | default('fluent-bit') }}
+
+{% if fluent_bit_user != 'root' %}
+User={{ fluent_bit_user }}
+Group={{ fluent_bit_group }}
+{% endif %}
 WorkingDirectory={{ fluent_bit_conf_dir }}
 EnvironmentFile=-{{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file}}
 
