@@ -58,7 +58,8 @@ This ansible role and the sub-components configured are not officially supported
 The role can be installed directly from the git repository
 
 ```bash
-ansible-galaxy role install git+https://github.com/couchbaselabs/ansible-couchbase-fluent-bit.git,,couchbaselabs.couchbase_fluent_bit
+ansible-galaxy role install \
+  git+https://github.com/couchbaselabs/ansible-couchbase-fluent-bit.git,,couchbaselabs.couchbase_fluent_bit
 ```
 
 It can also be added to a `requirements.yml` file
