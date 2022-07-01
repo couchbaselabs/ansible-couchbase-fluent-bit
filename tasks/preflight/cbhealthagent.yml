@@ -1,0 +1,22 @@
+---
+- name: Fail when cbhealthagent variables are not defined
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be set"
+  when: ( vars[item] is not defined )
+  with_items:
+    - fluent_bit_cbhealthagent_match
+    - fluent_bit_cbhealthagent_log_port
+
+- name: Fail when cbhealthagent variables are not a number
+  ansible.builtin.fail:
+    msg: "The fluent_bit_loki_port property must be an integer"
+  when: ( vars[item] is not number )
+  with_items:
+    - fluent_bit_cbhealthagent_log_port
+
+- name: Fail when cbhealthagent variables do not have a length
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be valued"
+  when: ( vars[item] | string | length == 0 )
+  with_items:
+    - fluent_bit_cbhealthagent_match

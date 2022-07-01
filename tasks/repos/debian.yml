@@ -1,19 +1,19 @@
 ---
 - name: Add Server GPG key   # noqa 301
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail && curl https://packages.fluentbit.io/fluentbit.key | \
       gpg --dearmor > /usr/share/keyrings/fluentbit-keyring.gpg
 
 - name: Update Sources   # noqa 301
-  shell: |
+  ansible.builtin.shell: |
     deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] \
       https://packages.fluentbit.io/debian/{{ ansible_distribution_release | lower }} {{ ansible_distribution_release | lower }} main
 
 - name: Update Repos
-  apt:
+  ansible.builtin.apt:
     update_cache: true
 
 - name: Add repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb-src https://packages.fluentbit.io/debian/{{ ansible_distribution_release | lower }} {{ ansible_distribution_release | lower }} main"
     state: present

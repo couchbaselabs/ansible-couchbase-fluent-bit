@@ -1,0 +1,144 @@
+---
+- name: Fail when couchbase variables are not defined
+  fail:
+    msg: "The {{ item }} property must be set"
+  when: ( item is not defined )
+  with_items:
+    - couchbase_username
+    - couchbase_password
+    - couchbase_install_dir
+    - couchbase_cluster_name
+    - couchbase_server_version
+    - couchbase_logs_dir
+    - couchbase_logs_rebalance_tmp_dir
+    - fluent_bit_couchbase_user_group
+
+- name: Fail when variables do not have a length
+  fail:
+    msg: "The {{ item }} property must be valued"
+  when: ( item | string | length == 0 )
+  with_items:
+    - couchbase_username
+    - couchbase_password
+    - couchbase_install_dir
+    - couchbase_logs_dir
+    - couchbase_audit_logs_dir
+    - couchbase_logs_rebalance_tmp_dir
+    - fluent_bit_couchbase_user_group
+
+- name: Set Valid Couchbase Log Files
+  set_fact:
+    __valid_couchbase_logs:
+      - audit.log
+      - babysitter.log
+      - couchdb.log
+      - debug.log
+      - json_rpc.log
+      - mapreduce_errors.log
+      - metakv.log
+      - ns_couchdb.log
+      - reports.log
+      - eventing.log
+      - fts.log
+      - http.log
+      - http_access.log
+      - http_access_internal.log
+      - indexer.log
+      - projector.log
+      - analytics.log
+      - memcached.log
+      - prometheus.log
+      - rebalance-report
+      - xdcr.log
+      - goxdcr.log
+
+- name: Fail when an invalid log file was specified
+  fail:
+    msg: "The log file ({{ item }}) is not a valid Couchbase Log file"
+  when: ( item not in __valid_couchbase_logs )
+  with_items: "{{ couchbase_logs }}"
+
+- name: Ensure that the "couchbase_logs_dir" exists
+  block:
+    - name: "Check if {{ couchbase_logs_dir }} exists"
+      ansible.builtin.stat:
+        path: "{{ couchbase_logs_dir }}"
+      register: __couchbase_logs_dir_check
+
+    - name: Fail when the couchbase_logs_dir does not exist
+      ansible.builtin.fail:
+        msg: "The couchbase_logs_dir ({{ couchbase_logs_dir }}) was specified but does not exist"
+      when: not __couchbase_logs_dir_check.stat.exists
+
+- name: Ensure that the "couchbase_audit_logs_dir" exists
+  block:
+    - name: "Check if {{ couchbase_audit_logs_dir }} exists"
+      ansible.builtin.stat:
+        path: "{{ couchbase_audit_logs_dir }}"
+      register: __couchbase_audit_logs_dir_check
+
+    - name: Fail when the couchbase_audit_logs_dir does not exist
+      ansible.builtin.fail:
+        msg: "The couchbase_audit_logs_dir ({{ couchbase_audit_logs_dir }}) was specified but does not exist"
+      when: not __couchbase_audit_logs_dir_check.stat.exists
+
+- name: Ensure that the "couchbase_logs_rebalance_tmp_dir" exists
+  block:
+    - name: "Check if {{ couchbase_logs_rebalance_tmp_dir }} exists"
+      ansible.builtin.stat:
+        path: "{{ couchbase_logs_rebalance_tmp_dir }}"
+      register: __couchbase_logs_rebalance_tmp_dir_check
+
+    - name: Fail when the couchbase_logs_rebalance_tmp_dir does not exist
+      ansible.builtin.fail:
+        msg: "The couchbase_logs_rebalance_tmp_dir ({{ couchbase_logs_rebalance_tmp_dir }}) was specified but does not exist"
+      when: not __couchbase_logs_rebalance_tmp_dir_check.stat.exists
+
+- name: Get the Couchbase Cluster Info
+  no_log: true
+  ansible.builtin.uri:
+    url: http://127.0.0.1:8091/pools/default
+    method: GET
+    user: "{{ couchbase_username }}"
+    password: "{{ couchbase_password }}"
+    timeout: 5
+    status_code:
+      - 200
+  register: _results
+  until: _results.status == 200
+  retries: 15
+  delay: 5
+
+- name: Set the Couchbase Cluster Name from the result of API call
+  ansible.builtin.set_fact:
+    couchbase_cluster_name: "{{ _results.json.clusterName }}"
+  when: not couchbase_cluster_name
+
+- name: Couchbase Cluster Name
+  ansible.builtin.debug:
+    msg: "{{ couchbase_cluster_name }}"
+
+- name: Set the Couchbase Node from the result of API call
+  ansible.builtin.set_fact:
+    couchbase_node: "{{ _results.json | community.general.json_query('nodes[?thisNode].hostname | [0]') | regex_replace(':[0-9]+$', '') }}"
+
+- name: Couchbase Node Name
+  ansible.builtin.debug:
+    msg: "{{ couchbase_node }}"
+
+- name: Set the Couchbase Server Version from the result of API call
+  ansible.builtin.set_fact:
+    couchbase_server_version: "{{ _results.json | community.general.json_query('nodes[?thisNode].version | [0]') }}"
+  when: not couchbase_server_version
+
+- name: Couchbase Server Version
+  ansible.builtin.debug:
+    msg: "{{ couchbase_server_version }}"
+
+- name: Set the Couchbase Services from the result of API call
+  ansible.builtin.set_fact:
+    couchbase_services: "{{ _results.json | community.general.json_query('nodes[?thisNode].services | [0]') | join(',') }}"
+
+- name: Couchbase Services
+  ansible.builtin.debug:
+    msg: "{{ couchbase_services }}"

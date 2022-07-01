@@ -1,6 +1,6 @@
 ---
 - name: Create Fluent Bit couchbase/output Directory
-  file:
+  ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/couchbase/output"
     state: directory
     owner: root
@@ -8,7 +8,7 @@
     mode: 0755
 
 - name: Configure Standard Out
-  template:
+  ansible.builtin.template:
     src: "conf/couchbase/output/out-stdout.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
     owner: root
@@ -18,13 +18,13 @@
 - name: Configure cbhealthagent
   block:
     - name: Add cbhealthagent to conf
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
 
     - name: Include cbhealthagent Output conf
-      template:
+      ansible.builtin.template:
         src: "conf/couchbase/output/out-cbhealthagent.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
         owner: root
@@ -36,13 +36,13 @@
 - name: Configure Loki
   block:
     - name: Add Loki to conf
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
 
     - name: Include Loki Output conf
-      template:
+      ansible.builtin.template:
         src: "conf/couchbase/output/out-loki.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
         owner: root
@@ -54,13 +54,13 @@
 - name: Configure Splunk
   block:
     - name: Add Splunk to conf
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
 
     - name: Include Splunk Output conf
-      template:
+      ansible.builtin.template:
         src: "conf/couchbase/output/out-splunk.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         owner: root
@@ -72,13 +72,13 @@
 - name: Configure Elasticsearch
   block:
     - name: Add Elasticsearch to conf
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
 
     - name: Include Elasticsearch Output conf
-      template:
+      ansible.builtin.template:
         src: "conf/couchbase/output/out-elastic.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
         owner: root

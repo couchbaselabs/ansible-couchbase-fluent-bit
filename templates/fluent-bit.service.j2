@@ -11,7 +11,7 @@ Type=simple
 
 {% if fluent_bit_user != 'root' %}
 User={{ fluent_bit_user }}
-Group={{ fluent_bit_group }}
+Group={{ fluent_bit_user_group }}
 {% endif %}
 WorkingDirectory={{ fluent_bit_conf_dir }}
 EnvironmentFile=-{{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file}}

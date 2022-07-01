@@ -1,6 +1,6 @@
 ---
 - name: Create Fluent Bit couchbase/input Directory
-  file:
+  ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/couchbase/input"
     state: directory
     owner: root
@@ -11,7 +11,7 @@
 # it is easier to have a separate conf file for each log file monitored and they can be dynamically
 # included through globbing i.e. conf/couchbase/input/in-*.conf
 - name: Include Single File Inputs
-  template:
+  ansible.builtin.template:
     src: "conf/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
     owner: root
@@ -28,7 +28,7 @@
     - rebalance-report
 
 - name: Include Eventing and FTS File Inputs
-  template:
+  ansible.builtin.template:
     src: "conf/couchbase/input/in-eventing-fts-log.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
     owner: root
@@ -40,7 +40,7 @@
     - fts.log
 
 - name: Include Erlang Log Files
-  template:
+  ansible.builtin.template:
     src: "conf/couchbase/input/in-erlang-multiline-log.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
     owner: root
@@ -58,7 +58,7 @@
     - reports.log
 
 - name: Include Slow Query Exec Input
-  template:
+  ansible.builtin.template:
     src: "conf/couchbase/input/in-slow-query-exec.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"
     owner: root

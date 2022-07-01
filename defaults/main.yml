@@ -13,6 +13,12 @@ fluent_bit_user_shell: /usr/sbin/nologin
 fluent_bit_user_createhome: false
 fluent_bit_log_level: info
 
+# full path to the local binary if already downloaded or built on the controller
+# this should only be set, if ansible is not downloading the binary and you have
+# manually downloaded the binary
+fluent_bit_local_binary_path: ""
+
+
 # Fluent Bit Couchbase Variables
 couchbase_username: Administrator
 couchbase_password: password

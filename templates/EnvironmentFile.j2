@@ -23,7 +23,7 @@ CB_PASSWORD="{{ couchbase_password }}"
 STDOUT_MATCH={{ fluent_bit_stdout_match | default('couchbase.log.*') }}
 
 {% if fluent_bit_cbhealthagent_enabled %}
-CBHEALTHAGENT_MATCH={{ fluent_bit_cbhealthagent_match | default('couchbase.*') }}
+CBHEALTHAGENT_MATCH={{ fluent_bit_cbhealthagent_match | default('couchbase.kernel,couchbase.log.*') }}
 CBHEALTHAGENT_PORT={{ fluent_bit_cbhealthagent_log_port | default('9092') }}
 {% endif %}
 

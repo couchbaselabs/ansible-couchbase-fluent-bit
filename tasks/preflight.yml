@@ -1,8 +1,8 @@
 ---
 - name: Fail when fluent_bit variables are not defined
-  fail:
+  ansible.builtin.fail:
     msg: "The {{ item }} property must be set"
-  when: ( item is not defined )
+  when: ( vars[item] is not defined )
   with_items:
     - fluent_bit_version
     - fluent_bit_storage_buffer_path
@@ -17,9 +17,6 @@
     - fluent_bit_user_createhome
     - fluent_bit_log_level
     - fluent_bit_stdout_match
-    - fluent_bit_loki_match
-    - fluent_bit_loki_host
-    - fluent_bit_loki_port
     - fluent_bit_mbl_couchbase_audit
     - fluent_bit_mbl_couchbase_erlang
     - fluent_bit_mbl_couchbase_eventing
@@ -31,24 +28,10 @@
     - fluent_bit_mbl_couchbase_rebalance
     - fluent_bit_mbl_couchbase_xdcr
 
-- name: Fail when couchbase variables are not defined
-  fail:
-    msg: "The {{ item }} property must be set"
-  when: ( item is not defined )
-  with_items:
-    - couchbase_username
-    - couchbase_password
-    - couchbase_install_dir
-    - couchbase_cluster_name
-    - couchbase_server_version
-    - couchbase_logs_dir
-    - couchbase_logs_rebalance_tmp_dir
-    - fluent_bit_couchbase_user_group
-
 - name: Fail when variables do not have a length
-  fail:
+  ansible.builtin.fail:
     msg: "The {{ item }} property must be valued"
-  when: ( item | string | length == 0 )
+  when: ( vars[item] | string | length == 0 )
   with_items:
     - fluent_bit_storage_buffer_path
     - fluent_bit_http_listen
@@ -59,26 +42,58 @@
     - fluent_bit_user
     - fluent_bit_user_group
     - fluent_bit_log_level
-    - couchbase_username
-    - couchbase_password
-    - couchbase_install_dir
-    - couchbase_logs_dir
-    - couchbase_audit_logs_dir
-    - couchbase_logs_rebalance_tmp_dir
-    - fluent_bit_couchbase_user_group
 
 - name: Fail when fluent_bit_http_port is not a number
-  fail:
+  ansible.builtin.fail:
     msg: "The fluent_bit_http_port property must be an integer"
   when: ( fluent_bit_http_port is defined and fluent_bit_http_port is not number )
 
 - name: Fail when the log level contains an invalid value
-  fail:
+  ansible.builtin.fail:
     msg: "The fluent_bit_log_level can only be: debug, info, warn, error"
   when: ( fluent_bit_log_level not in ['off', 'debug','info','warn','error'] )
 
+- name: Make sure output enable flags are defined
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be set"
+  when: ( vars[item] is not defined )
+  with_items:
+    - fluent_bit_loki_enabled
+    - fluent_bit_splunk_enabled
+
+- name: Fail when out enable flags are not a boolean
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be a boolean true or false "
+  when: ( vars[item] | bool | string | lower ) not in ['true', 'false']
+  with_items:
+    - fluent_bit_cbhealthagent_enabled
+    - fluent_bit_loki_enabled
+    - fluent_bit_splunk_enabled
+    - fluent_bit_es_enabled
+    - fluent_bit_calyptia_enabled
+
+# cbhealthagent preflight checks
+- include_tasks:
+    file: preflight/cbhealthagent.yml
+  when: fluent_bit_cbhealthagent_enabled
+
+# Loki preflight checks
+- include_tasks:
+    file: preflight/loki.yml
+  when: fluent_bit_loki_enabled
+
+# Splunk preflight checks
+- include_tasks:
+    file: preflight/splunk.yml
+  when: fluent_bit_splunk_enabled
+
+# Elasticsearch preflight checks
+- include_tasks:
+    file: preflight/elasticsearch.yml
+  when: fluent_bit_es_enabled
+
 - name: Assert usage of systemd as an init system
-  assert:
+  ansible.builtin.assert:
     that: ansible_service_mgr == 'systemd'
     msg: "This role only works with systemd"
 
@@ -91,11 +106,35 @@
     - skip_ansible_lint
 
 - name: Set systemd version fact
-  set_fact:
+  ansible.builtin.set_fact:
     fluent_bit_systemd_version: "{{ __systemd_version.stdout_lines[0] | regex_replace('^systemd\\s(\\d+).*$', '\\1') }}"
 
+- name: Default to non-local install
+  ansible.builtin.set_fact:
+    __fluent_bit_local_install: false
+
+- name: Fail when fluent_bit_local_binary_path is defined but the file doesn't exist
+  block:
+    - name: Check if fluent_bit_local_binary_path exists
+      ansible.builtin.stat:
+        path: "{{ _fluent_bit_binary_install_dir }}/fluent-bit"
+      register: __fluent_bit_local_binary_check
+      become: false
+      delegate_to: localhost
+      check_mode: false
+
+    - name: Fail when the fluent_bit_local_binary_path does not exist
+      ansible.builtin.fail:
+        msg: "The fluent_bit_local_binary_path ({{ fluent_bit_local_binary_path }}) was specified but does not exist"
+      when: not __fluent_bit_local_binary_check.stat.exists
+
+    - name: Default to non-local install
+      ansible.builtin.set_fact:
+        __fluent_bit_local_install: true
+  when: fluent_bit_local_binary_path is defined and fluent_bit_local_binary_path | length > 0
+
 - name: Check if fluent_bit is installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ _fluent_bit_binary_install_dir }}/fluent-bit"
   register: __fluent_bit_is_installed
   check_mode: false
@@ -122,74 +161,27 @@
       ansible.builtin.debug:
         var: fluent_bit_installed_version
 
-  when: __fluent_bit_is_installed.stat.exists
+  when: __fluent_bit_is_installed.stat.exists and not __fluent_bit_local_install
 
 - name: Get Fluent Bit Version from Github
   block:
     - name: Get the latest published Fluent Bit     # noqa command-instead-of-module
       # this will need to be changed from /releases to /releases/latest once a GA release has been made
-      shell: |
+      ansible.builtin.shell: |
         curl -s https://api.github.com/repos/{{ _fluent_bit_github_org }}/{{ _fluent_bit_github_repo }}/releases \
           | grep -m 1 tag_name \
           | cut -d '"' -f 4 | cut -c 2-
       changed_when: false
       register: _fluent_bit_version_request
 
-    - name: Set the CMOS Exporter Version
-      set_fact:
+    - name: Set the Fluent Bit Version
+      ansible.builtin.set_fact:
         fluent_bit_version: "{{ _fluent_bit_version_request.stdout | string }}"
-  when: fluent_bit_version == 'latest'
+  when: fluent_bit_version == 'latest' and __fluent_bit_local_install
 
-- name: Get Cluster Info
-  block:
-    - name: Get the Couchbase Cluster Info
-      no_log: true
-      uri:
-        url: http://127.0.0.1:8091/pools/default
-        method: GET
-        user: "{{ couchbase_username }}"
-        password: "{{ couchbase_password }}"
-        timeout: 5
-        status_code:
-          - 200
-      register: _results
-      until: _results.status == 200
-      retries: 15
-      delay: 5
-
-    - name: Set the Couchbase Cluster Name from the result of API call
-      set_fact:
-        couchbase_cluster_name: "{{ _results.json.clusterName }}"
-      when: not couchbase_cluster_name
-
-    - name: Couchbase Cluster Name
-      debug:
-        msg: "{{ couchbase_cluster_name }}"
-
-    - name: Set the Couchbase Node from the result of API call
-      set_fact:
-        couchbase_node: "{{ _results.json | community.general.json_query('nodes[?thisNode].hostname | [0]') | regex_replace(':[0-9]+$', '') }}"
-
-    - name: Couchbase Node Name
-      debug:
-        msg: "{{ couchbase_node }}"
-
-    - name: Set the Couchbase Server Version from the result of API call
-      set_fact:
-        couchbase_server_version: "{{ _results.json | community.general.json_query('nodes[?thisNode].version | [0]') }}"
-      when: not couchbase_server_version
-
-    - name: Couchbase Server Version
-      debug:
-        msg: "{{ couchbase_server_version }}"
-
-    - name: Set the Couchbase Services from the result of API call
-      set_fact:
-        couchbase_services: "{{ _results.json | community.general.json_query('nodes[?thisNode].services | [0]') | join(',') }}"
-
-    - name: Couchbase Services
-      debug:
-        msg: "{{ couchbase_services }}"
+# Couchbase preflight checks
+- include_tasks:
+    file: preflight/couchbase.yml
 
 - name: Set whether or not to do the install
   ansible.builtin.set_fact:

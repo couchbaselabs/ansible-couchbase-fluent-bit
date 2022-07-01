@@ -1,0 +1,36 @@
+---
+- name: Fail when Loki variables are not defined
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be set"
+  when: ( vars[item] is not defined )
+  with_items:
+    - fluent_bit_loki_match
+    - fluent_bit_loki_host
+    - fluent_bit_loki_port
+    - fluent_bit_loki_workers
+    - fluent_bit_loki_tls
+    - fluent_bit_loki_tls_verify
+
+- name: Fail when fluent_bit_loki_port is not a number
+  ansible.builtin.fail:
+    msg: "The fluent_bit_loki_port property must be an integer"
+  when: ( vars[item] is not number )
+  with_items:
+    - fluent_bit_loki_port
+    - fluent_bit_loki_workers
+
+- name: Fail when Loki variables do not have a length
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be valued"
+  when: ( vars[item] | string | length == 0 )
+  with_items:
+    - fluent_bit_loki_match
+    - fluent_bit_loki_host
+
+- name: Fail when the tls is not "on" or "off" has a type property has been set but is invalid
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be 'on' or 'off'"
+  when: ( vars[item] not in ['on','off'] )
+  with_items:
+    - fluent_bit_loki_tls
+    - fluent_bit_loki_tls_verify

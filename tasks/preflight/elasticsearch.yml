@@ -1,0 +1,24 @@
+---
+- name: Fail when Elasticsearch variables are not defined
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be set"
+  when: ( vars[item] is not defined )
+  with_items:
+    - fluent_bit_es_match
+    - fluent_bit_es_host
+    - fluent_bit_es_port
+
+- name: Fail when Elasticsearch variables are not a number
+  ansible.builtin.fail:
+    msg: "The fluent_bit_es_port property must be an integer"
+  when: ( vars[item] is not number )
+  with_items:
+    - fluent_bit_es_port
+
+- name: Fail when Elasticsearch variables do not have a length
+  ansible.builtin.fail:
+    msg: "The {{ item }} property must be valued"
+  when: ( vars[item] | string | length == 0 )
+  with_items:
+    - fluent_bit_es_match
+    - fluent_bit_es_host

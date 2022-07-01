@@ -1,8 +1,38 @@
 ---
-- name: Make sure Fluent Bit is stopped
-  service:
-    name: fluent-bit
-    state: stopped
+- name: Stop fluent-bit if installed
+  block:
+    # this will fail the verify first time of installation if local binary is used
+    - name: Ensure fluent-bit is stopped
+      ansible.builtin.systemd:
+        name: fluent-bit
+        enabled: true
+        state: stopped
+  rescue:
+    # make sure that the service isn't actually installed
+    - name: Get the list of services
+      service_facts:
+
+    - name: Verify that fluent-bit is not installed
+      assert:
+        that:
+          - _fluent_bit_systemd_unit not in services
+
+# only used when propagating a local binary
+- name: Installed Version
+  block:
+    - name: Gather currently installed fluent-bit version
+      ansible.builtin.command:
+        cmd: |
+          {{ _fluent_bit_binary_install_dir }}/fluent-bit --version | cut -d 'v' -f 2 | sed -Ez 's/\\n+.+$//'
+      changed_when: false
+      register: __fluent_bit_current_version_output
+      check_mode: false
+
+    - name: Set fluent-bit Installed Version
+      ansible.builtin.set_fact:
+        fluent_bit_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$', '') }}"
+
+  when: __fluent_bit_local_install or fluent_bit_version == 'latest'
 
 - name: Fluent Bit Version
   debug:
@@ -18,8 +48,8 @@
 
 - name: Setup Fluent Bit Service
   block:
-    - name: Overwrite Fluent Bit Service
-      template:
+    - name: Overwrite/Create Fluent Bit Service
+      ansible.builtin.template:
         src: fluent-bit.service.j2
         dest: "{{ _fluent_bit_systemd_path }}/{{ _fluent_bit_systemd_unit }}"
         owner: root
@@ -27,7 +57,7 @@
         mode: 0755
 
     - name: Create the Service Environment File
-      template:
+      ansible.builtin.template:
         src: EnvironmentFile.j2
         dest: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file }}"
         owner: root
@@ -35,7 +65,7 @@
         mode: 0640
 
 - name: Create Fluent Bit couchbase Directory
-  file:
+  ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/couchbase"
     state: directory
     owner: root
@@ -43,7 +73,7 @@
     mode: 0755
 
 - name: Create main conf file
-  template:
+  ansible.builtin.template:
     src: "conf/fluent-bit.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
     owner: root
@@ -51,7 +81,7 @@
     mode: 0640
 
 - name: Create service, parsers, and streams conf files
-  template:
+  ansible.builtin.template:
     src: "conf/couchbase/{{ item }}.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/{{ item }}"
     owner: root
@@ -63,7 +93,7 @@
     - service.conf
 
 - name: Create Fluent Bit couchbase/filter Directory
-  file:
+  ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/couchbase/filter"
     state: directory
     owner: root
@@ -71,7 +101,7 @@
     mode: 0755
 
 - name: Create Filter conf files
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/filter/{{ item | basename | regex_replace('\\.j2$', '') }}"
     owner: root
@@ -84,7 +114,7 @@
 - name: Create Scripts Directory
   block:
     - name: Create Fluent Bit couchbase/scripts Directory
-      file:
+      ansible.builtin.file:
         path: "{{ fluent_bit_conf_dir }}/couchbase/scripts"
         state: directory
         owner: root
@@ -92,7 +122,7 @@
         mode: 0755
 
     - name: Copy query-logger script
-      copy:
+      ansible.builtin.copy:
         src: conf/couchbase/scripts/query-logger
         dest: "{{ fluent_bit_conf_dir }}/couchbase/scripts/query-logger"
         owner: root
@@ -116,7 +146,7 @@
         - fluent_bit_configure
 
 - name: Cleanup Original Files
-  file:
+  ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/{{ item }}"
     state: absent
   with_items:

@@ -1,6 +1,6 @@
 ---
 - name: Add repository (CentOS)
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: fluent-bit
     description: Fluent Bit
     gpgcheck: true

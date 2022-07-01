@@ -25,19 +25,32 @@
     createhome: "{{ fluent_bit_user_createhome }}"
   when: fluent_bit_user != 'root'
 
-- name: Include the OS specific repository
-  include_tasks: "{{ item }}"
-  with_first_found:
-    - "repos/{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
-    - "repos/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "repos/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "repos/{{ ansible_distribution | lower }}.yml"
-    - "repos/{{ ansible_os_family | lower }}.yml"
+- name: Package Install
+  block:
+    - name: Include the OS specific repository
+      include_tasks: "{{ item }}"
+      with_first_found:
+        - "repos/{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "repos/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "repos/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "repos/{{ ansible_distribution | lower }}.yml"
+        - "repos/{{ ansible_os_family | lower }}.yml"
 
-- name: Install the latest version of Fluent Bit
-  package:
-    name: fluent-bit
-    state: present
+    - name: Install the latest version of Fluent Bit
+      package:
+        name: fluent-bit
+        state: latest
+
+  when: not __fluent_bit_local_install and __fluent_bit_do_install
+
+- name: Propagate local fluent-bit binary
+  ansible.builtin.copy:
+    src: "{{ fluent_bit_local_binary_path }}"
+    dest: "{{ fluent_bit_local_binary_path }}/fluent-bit"
+    mode: 0755
+    owner: root
+    group: "{{ fluent_bit_user_group }}"
+  when: __fluent_bit_local_install
 
 - name: Ensure fluent-bit permissions are correctly set
   become: true
@@ -51,11 +64,6 @@
     - "{{ fluent_bit_conf_dir }}"
     - "{{ _fluent_bit_binary_install_dir }}"
 
-- name: Make sure Fluent Bit is stopped
-  service:
-    name: fluent-bit
-    state: stopped
-
 - name: Remove storage buffer directory exists
   file:
     path: "{{ fluent_bit_storage_buffer_path }}"
@@ -64,7 +72,7 @@
 - name: Ensure storage buffer directory exists
   file:
     path: "{{ fluent_bit_storage_buffer_path }}"
+    state: directory
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
     mode: 0755
-    state: directory
