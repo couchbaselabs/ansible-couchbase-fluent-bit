@@ -39,7 +39,7 @@
     - name: Install the latest version of Fluent Bit
       package:
         name: fluent-bit
-        state: latest
+        state: latest    # # noqa package-latest
 
   when: not __fluent_bit_local_install and __fluent_bit_do_install
 
