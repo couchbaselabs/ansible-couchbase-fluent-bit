@@ -8,12 +8,29 @@
     mode: 0755
 
 - name: Configure Standard Out
-  ansible.builtin.template:
-    src: "conf/couchbase/output/out-stdout.conf.j2"
-    dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
-    owner: root
-    group: "{{ fluent_bit_user_group }}"
-    mode: 0640
+  block:
+    - name: Add stdout to conf
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: present
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+      when: fluent_bit_cbhealthagent_enabled
+
+    - name: Include stdout Output conf
+      ansible.builtin.template:
+        src: "conf/couchbase/output/out-stdout.conf.j2"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+        owner: root
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0640
+      when: fluent_bit_cbhealthagent_enabled
+
+    - name: Remove stdout from conf
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+      when: not fluent_bit_cbhealthagent_enabled
 
 - name: Configure cbhealthagent
   block:
@@ -22,6 +39,7 @@
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+      when: fluent_bit_cbhealthagent_enabled
 
     - name: Include cbhealthagent Output conf
       ansible.builtin.template:
@@ -30,8 +48,14 @@
         owner: root
         group: "{{ fluent_bit_user_group }}"
         mode: 0640
+      when: fluent_bit_cbhealthagent_enabled
 
-  when: fluent_bit_cbhealthagent_enabled
+    - name: Remove cbhealthagent from conf
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+      when: not fluent_bit_cbhealthagent_enabled
 
 - name: Configure Loki
   block:
@@ -40,6 +64,7 @@
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
+      when: fluent_bit_loki_enabled
 
     - name: Include Loki Output conf
       ansible.builtin.template:
@@ -48,8 +73,14 @@
         owner: root
         group: "{{ fluent_bit_user_group }}"
         mode: 0640
+      when: fluent_bit_loki_enabled
 
-  when: fluent_bit_loki_enabled
+    - name: Remove Loki from conf
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
+      when: not fluent_bit_loki_enabled
 
 - name: Configure Splunk
   block:
@@ -58,6 +89,7 @@
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
+      when: fluent_bit_splunk_enabled
 
     - name: Include Splunk Output conf
       ansible.builtin.template:
@@ -66,8 +98,14 @@
         owner: root
         group: "{{ fluent_bit_user_group }}"
         mode: 0640
+      when: fluent_bit_splunk_enabled
 
-  when: fluent_bit_splunk_enabled
+    - name: Remove Splunk from conf
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
+      when: not fluent_bit_splunk_enabled
 
 - name: Configure Elasticsearch
   block:
@@ -76,6 +114,7 @@
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
         line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
+      when: fluent_bit_es_enabled
 
     - name: Include Elasticsearch Output conf
       ansible.builtin.template:
@@ -84,5 +123,11 @@
         owner: root
         group: "{{ fluent_bit_user_group }}"
         mode: 0640
+      when: fluent_bit_es_enabled
 
-  when: fluent_bit_es_enabled
+    - name: Remove Elasticsearch from conf
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
+      when: not fluent_bit_es_enabled

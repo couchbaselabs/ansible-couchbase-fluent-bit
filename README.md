@@ -129,8 +129,8 @@ Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent 
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
+| `fluent_bit_stdout_enabled` | `false` | Whether or not to enable output to stdout |
 | `fluent_bit_stdout_match` | `couchbase.log.*` | The tags to match for outputting to stdout |
-
 
 #### cbhealthagent output
 
@@ -139,10 +139,6 @@ Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent 
 | `fluent_bit_cbhealthagent_enabled` | `false` | Whether or not to output log messages to `cbhealthagent` running on the local node |
 | `fluent_bit_cbhealthagent_match` | `couchbase.kernel,couchbase.log.*` | The tags to match for outputting to `cbhealthagent` |
 | `fluent_bit_cbhealthagent_log_port` | `9084` | The TCP port that `cbhealthagent` is listening on |
-
-fluent_bit_cbhealthagent_enabled: false
-fluent_bit_cbhealthagent_match: couchbase.kernel,couchbase.log.*
-fluent_bit_cbhealthagent_log_port: 9084
 
 #### Loki
 

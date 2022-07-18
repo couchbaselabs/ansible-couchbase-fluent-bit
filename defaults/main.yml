@@ -71,7 +71,8 @@ fluent_bit_mbl_couchbase_xdcr: false
 # *************************************
 # *  Output Configuration
 # *************************************
-# Fluent Bit output matchers
+# stdout output (# be cautious of enabling as this could fill up system logs)
+fluent_bit_stdout_enabled: false
 fluent_bit_stdout_match: couchbase.log.*
 
 # cbhealthagent output
