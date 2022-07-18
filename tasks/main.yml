@@ -7,6 +7,10 @@
         - fluent_bit_install
         - fluent_bit_configure
         - fluent_bit_run
+  tags:
+    - fluent_bit_install
+    - fluent_bit_configure
+    - fluent_bit_run
 
 - include_tasks:
     file: install.yml
@@ -14,6 +18,8 @@
       become: true
       tags:
         - fluent_bit_install
+  tags:
+    - fluent_bit_install
   when: __fluent_bit_do_install
 
 - include_tasks:
