@@ -7,23 +7,56 @@
     - postgresql-libs
     - lua
 
-- name: Add user group "{{ fluent_bit_user_group }}"
-  group:
-    name: "{{ fluent_bit_user_group }}"
-    system: true
-    state: present
+- name: Fluent Bit Group Creation
+  block:
+    - name: Check if the "{{ fluent_bit_user_group }}" group exists
+      ansible.builtin.getent:
+        database: group
+        key: "{{ fluent_bit_user_group }}"
+        fail_key: false
 
-- name: Add user "{{ fluent_bit_user }}"
-  user:
-    name: "{{ fluent_bit_user }}"
-    comment: "Fluent Bit Account"
-    groups:
-      - "{{ fluent_bit_user_group }}"
-      - "{{ fluent_bit_couchbase_user_group }}"
-    system: true
-    shell: "{{ fluent_bit_user_shell }}"
-    createhome: "{{ fluent_bit_user_createhome }}"
-  when: fluent_bit_user != 'root'
+    - name: Set whether not the user group exists
+      set_fact:
+        __fluent_bit_user_group_exists: "{{ ansible_facts.getent_group[fluent_bit_user_group] is not none }}"
+
+    - name: Add user group "{{ fluent_bit_user_group }}"
+      group:
+        name: "{{ fluent_bit_user_group }}"
+        system: true
+        state: present
+      when: not __fluent_bit_user_group_exists and fluent_bit_user_group != 'root'
+
+    - name: Fluent Bit User Group Exists
+      ansible.builtin.debug:
+        msg: "The user group \"{{ fluent_bit_user_group }}\" already exists and will not be modified, if modifying permissions please perform a separate task"
+
+- name: Fluent Bit User Creation
+  block:
+    - name: Check if the "{{ fluent_bit_user }}" user exists
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ fluent_bit_user }}"
+        fail_key: false
+
+    - name: Set whether not the user exists
+      set_fact:
+        __fluent_bit_user_exists: "{{ ansible_facts.getent_passwd[fluent_bit_user] is not none }}"
+
+    - name: Add user "{{ fluent_bit_user }}"
+      user:
+        name: "{{ fluent_bit_user }}"
+        comment: "Fluent Bit Account"
+        groups:
+          - "{{ fluent_bit_user_group }}"
+          - "{{ fluent_bit_couchbase_user_group }}"
+        system: true
+        shell: "{{ fluent_bit_user_shell }}"
+        createhome: "{{ fluent_bit_user_createhome }}"
+      when: not __fluent_bit_user_exists and fluent_bit_user != 'root'
+
+    - name: Fluent Bit User Exists
+      ansible.builtin.debug:
+        msg: "The user \"{{ fluent_bit_user }}\" already exists and will not be modified, if modifying permissions please perform a separate task"
 
 - name: Package Install
   block:
