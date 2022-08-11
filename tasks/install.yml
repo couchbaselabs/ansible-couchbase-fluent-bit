@@ -29,6 +29,7 @@
     - name: Fluent Bit User Group Exists
       ansible.builtin.debug:
         msg: "The user group \"{{ fluent_bit_user_group }}\" already exists and will not be modified, if modifying permissions please perform a separate task"
+      when: __fluent_bit_user_group_exists
 
 - name: Fluent Bit User Creation
   block:
@@ -57,6 +58,7 @@
     - name: Fluent Bit User Exists
       ansible.builtin.debug:
         msg: "The user \"{{ fluent_bit_user }}\" already exists and will not be modified, if modifying permissions please perform a separate task"
+      when: __fluent_bit_user_exists
 
 - name: Package Install
   block:
