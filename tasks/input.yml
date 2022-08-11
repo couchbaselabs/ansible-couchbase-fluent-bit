@@ -3,9 +3,9 @@
   ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/couchbase/input"
     state: directory
-    owner: root
+    owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0755
+    mode: 0664
 
 # For simplicity several inputs can manage multiple log files, so not be repeated.  However, to manage
 # it is easier to have a separate conf file for each log file monitored and they can be dynamically
@@ -14,9 +14,9 @@
   ansible.builtin.template:
     src: "conf/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
-    owner: root
+    owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0640
+    mode: 0664
   when: item in couchbase_logs
   with_items:
     - audit.log
@@ -31,9 +31,9 @@
   ansible.builtin.template:
     src: "conf/couchbase/input/in-eventing-fts-log.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
-    owner: root
+    owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0640
+    mode: 0664
   when: item in couchbase_logs
   with_items:
     - eventing.log
@@ -43,9 +43,9 @@
   ansible.builtin.template:
     src: "conf/couchbase/input/in-erlang-multiline-log.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
-    owner: root
+    owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0640
+    mode: 0664
   when: item in couchbase_logs
   with_items:
     - babysitter.log
@@ -61,8 +61,8 @@
   ansible.builtin.template:
     src: "conf/couchbase/input/in-slow-query-exec.conf.j2"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"
-    owner: root
+    owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0640
+    mode: 0664
   # only include when slow query logging is enabled and and the node is a query node
   when: couchbase_enable_slow_query_logging and "n1ql" in couchbase_services

@@ -3,9 +3,9 @@
   ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/couchbase/output"
     state: directory
-    owner: root
+    owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0755
+    mode: 0664
 
 - name: Configure Standard Out
   block:
@@ -20,9 +20,9 @@
       ansible.builtin.template:
         src: "conf/couchbase/output/out-stdout.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
-        owner: root
+        owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
-        mode: 0640
+        mode: 0664
       when: fluent_bit_cbhealthagent_enabled
 
     - name: Remove stdout from conf
@@ -45,9 +45,9 @@
       ansible.builtin.template:
         src: "conf/couchbase/output/out-cbhealthagent.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
-        owner: root
+        owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
-        mode: 0640
+        mode: 0664
       when: fluent_bit_cbhealthagent_enabled
 
     - name: Remove cbhealthagent from conf
@@ -70,9 +70,9 @@
       ansible.builtin.template:
         src: "conf/couchbase/output/out-loki.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-        owner: root
+        owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
-        mode: 0640
+        mode: 0664
       when: fluent_bit_loki_enabled
 
     - name: Remove Loki from conf
@@ -95,9 +95,9 @@
       ansible.builtin.template:
         src: "conf/couchbase/output/out-splunk.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
-        owner: root
+        owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
-        mode: 0640
+        mode: 0664
       when: fluent_bit_splunk_enabled
 
     - name: Remove Splunk from conf
@@ -120,9 +120,9 @@
       ansible.builtin.template:
         src: "conf/couchbase/output/out-elastic.conf.j2"
         dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
-        owner: root
+        owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
-        mode: 0640
+        mode: 0664
       when: fluent_bit_es_enabled
 
     - name: Remove Elasticsearch from conf

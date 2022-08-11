@@ -1,6 +1,6 @@
 ---
 - name: Fail when couchbase variables are not defined
-  fail:
+  ansible.builtin.fail:
     msg: "The {{ item }} property must be set"
   when: ( item is not defined )
   with_items:
@@ -14,7 +14,7 @@
     - fluent_bit_couchbase_user_group
 
 - name: Fail when variables do not have a length
-  fail:
+  ansible.builtin.fail:
     msg: "The {{ item }} property must be valued"
   when: ( item | string | length == 0 )
   with_items:
@@ -27,7 +27,7 @@
     - fluent_bit_couchbase_user_group
 
 - name: Set Valid Couchbase Log Files
-  set_fact:
+  ansible.builtin.set_fact:
     __valid_couchbase_logs:
       - audit.log
       - babysitter.log
@@ -53,7 +53,7 @@
       - goxdcr.log
 
 - name: Fail when an invalid log file was specified
-  fail:
+  ansible.builtin.fail:
     msg: "The log file ({{ item }}) is not a valid Couchbase Log file"
   when: ( item not in __valid_couchbase_logs )
   with_items: "{{ couchbase_logs }}"

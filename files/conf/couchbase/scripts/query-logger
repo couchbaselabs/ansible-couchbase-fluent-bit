@@ -375,6 +375,7 @@ executeN1ql() {
     --silent \
     --data-urlencode "statement=$statement" \
     --connect-timeout "$TIMEOUT" \
+    --max-time "$TIMEOUT" \
     --write-out "HTTPSTATUS:%{http_code}" \
     "$url")
   local http_body
@@ -410,6 +411,7 @@ isQueryNode() {
     --user "$USERNAME:$PASSWORD" \
     --silent \
     --connect-timeout "$TIMEOUT" \
+    --max-time "$TIMEOUT" \
     --request GET \
     --write-out "HTTPSTATUS:%{http_code}" \
     "$url")
