@@ -94,7 +94,7 @@
     state: directory
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0665
+    mode: 0775
   with_items:
     - "{{ fluent_bit_conf_dir }}"
     - "{{ _fluent_bit_binary_install_dir }}"

@@ -70,7 +70,7 @@
     state: directory
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0664
+    mode: 0775
 
 - name: Create main conf file
   ansible.builtin.template:
@@ -119,7 +119,7 @@
         state: directory
         owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
-        mode: 0665
+        mode: 0775
 
     - name: Copy query-logger script
       ansible.builtin.copy:
