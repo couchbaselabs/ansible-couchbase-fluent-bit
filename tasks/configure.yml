@@ -98,7 +98,7 @@
     state: directory
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
-    mode: 0664
+    mode: 0775
 
 - name: Create Filter conf files
   ansible.builtin.template:
@@ -128,6 +128,12 @@
         owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
         mode: 0775
+
+    - name: Install jq if query logging is enabled
+      ansible.builtin.package:
+        name: jq
+        state: present
+      when: couchbase_enable_slow_query_logging
 
 # Handle Input
 - include_tasks:
