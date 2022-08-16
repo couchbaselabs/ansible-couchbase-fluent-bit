@@ -7,10 +7,10 @@
     Set         level                                           UNKNOWN
     Set         level_numeric                                   0
 
-# Add Filter to create TAG as couchbase.stream.<nameoffile>.<level>
+# Add Filter to create TAG as couchbase.log-level.<level>.<nameoffile>
 [FILTER]
     Name          rewrite_tag
     Alias         add_level_to_tag_rewrite_tag
     Match         couchbase.stream
-    Rule          $file ^(.+)\.log$ $TAG.$1.$level false
+    Rule          $file ^(.+)\.log$ couchbase.log-level.$level.$1 false
     Emitter_Name  add_level_to_tag

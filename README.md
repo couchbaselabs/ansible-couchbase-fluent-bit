@@ -125,6 +125,78 @@ Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent 
 
 ## Output Variables
 
+The following output tags/patterns are available for matching:
+
+-   `couchbase.log.<log-name>`
+-   `couchbase.log-level.<log-level>.<log-name>`
+-   `couchbase.audit.messages`
+-   `couchbase.audit.bucket.<name-of-bucket>`
+
+The following log names are available:
+
+-   `analytics`
+-   `analytics_debug`
+-   `audit `
+-   `babysitter`
+-   `couchdb`
+-   `debug`
+-   `eventing`
+-   `eventing`
+-   `fts `
+-   `goxdcr `
+-   `http_access`
+-   `http_access_internal `
+-   `indexer `
+-   `json_rpc `
+-   `mapreduce_errors `
+-   `memcached `
+-   `metakv `
+-   `ns_couchdb `
+-   `projector `
+-   `prometheus `
+-   `rebalance `
+-   `reports`
+-   `slow_query `
+
+The following log levels  are available:
+
+-   `DEBUG`
+-   `INFO`
+-   `WARN`
+-   `ERROR`
+-   `UNKNOWN`
+
+The following is example tags:
+
+Output All Logs
+
+```bash
+couchbase.log.*
+```
+
+Output only slow_query and audit logs
+
+```bash
+couchbase.log.slow_query,couchbase.log.audit
+```
+
+Output only Errors and Warnings
+
+```bash
+couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*
+```
+
+Output Errors and Warnings, as well as slow_query and audit
+
+```bash
+couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*,couchbase.log.slow_query,couchbase.log.audit
+```
+
+
+| `` | Output All Logs |
+| `` |  |
+| `couchbase.log.slow_query,couchbase.log.audit` |  |
+
 #### Standard Out
 
 | Name           | Default Value | Description                        |
