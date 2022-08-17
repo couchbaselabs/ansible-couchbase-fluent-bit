@@ -28,8 +28,6 @@ RemoveIPC=true
 
 SyslogIdentifier=fluent-bit
 Restart=always
-RestartSec=1
-StartLimitInterval=0
 
 {% if fluent_bit_systemd_version | int >= 232 %}
 ProtectSystem=strict
