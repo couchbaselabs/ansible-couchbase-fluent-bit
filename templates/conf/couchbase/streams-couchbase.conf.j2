@@ -2,7 +2,3 @@
 [STREAM_TASK]
     Name   couchbase_logs_stream
     Exec   CREATE STREAM info WITH (tag='couchbase.stream') AS SELECT * from TAG:'couchbase.log.*';
-
-[STREAM_TASK]
-    Name   couchbase_audit_bucket_stream
-    Exec   CREATE STREAM info WITH (tag='couchbase.audit.bucket') AS SELECT * from TAG:'couchbase.log.audit WHERE @record.contains(bucket)';
