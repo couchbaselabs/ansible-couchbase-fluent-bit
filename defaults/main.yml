@@ -29,6 +29,8 @@ couchbase_logs_dir: /opt/couchbase/var/lib/couchbase/logs
 couchbase_audit_logs_dir: /opt/couchbase/var/lib/couchbase/logs
 couchbase_logs_rebalance_tmp_dir: /opt/couchbase/var/lib/couchbase/logs/rebalance
 fluent_bit_couchbase_user_group: couchbase
+# what version of the fluent-bit config from https://github.com/couchbase/couchbase-fluent-bit is used
+couchbase_fluent_bit_version: 1.2.1
 
 # Which log files to monitor
 couchbase_logs:

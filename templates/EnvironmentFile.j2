@@ -3,6 +3,7 @@ FLUENTBIT_VERSION="{{ fluent_bit_version | default('Unknown') | trim }}"
 FLUENT_BIT_LOG_LEVEL={{ fluent_bit_log_level | default('warn') }}
 STORAGE_BUFFER_PATH={{ fluent_bit_storage_buffer_path | default('/var/lib/fluent-bit') }}
 HTTP_PORT={{ fluent_bit_http_port }}
+COUCHBASE_FLUENTBIT_VERSION="{{ couchbase_fluent_bit_version | default('Unknown') | trim }}"
 
 # Couchbase Settings
 COUCHBASE_CLUSTER_NAME="{{ couchbase_cluster_name | default('Unknown') }}"
