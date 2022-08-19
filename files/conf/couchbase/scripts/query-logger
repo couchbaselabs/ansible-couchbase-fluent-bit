@@ -310,45 +310,59 @@ getSlowQueryStatement() {
   local n1ql="
     PREPARE
     SELECT RAW OBJECT_CONCAT(
-        OBJECT_REMOVE(OBJECT_REMOVE(cr, 'statement'), 'preparedText'),
-        {
-          cost,
-          requestTimeMs,
-          elapsedTimeMs,
-          serviceTimeMs,
-          queueTime,
-          queueTimeMs,
-          querySelectivityPercent,
-          \"statement\": IFMISSING(cr.preparedText, cr.statement)
-        }
+      OBJECT_REMOVE(OBJECT_REMOVE(cr, 'statement'), 'preparedText'),
+      {
+        cost,
+        requestTimeMs,
+        elapsedTimeMs,
+        serviceTimeMs,
+        queueTime,
+        queueTimeMs,
+        querySelectivityPercent,
+        \"statement\": stmt,
+        \"bucket\": source[0],
+        \"scope\": IFMISSINGORNULL(source[1], \"_default\"),
+        \"collection\": IFMISSINGORNULL(source[2], \"_default\")
+      }
     )
     FROM system:completed_requests AS cr
-    LET requestTimeMs = STR_TO_MILLIS(STR_TO_UTC(REPLACE(REGEX_REPLACE(REPLACE(REPLACE(REGEX_REPLACE(cr.requestTime, \" [A-Z]{3}\$\", ''), ' -', '-'), ' +', '+'), '00\$', ':00'), ' ', 'T'))),
-        serviceTimeMs = ROUND(STR_TO_DURATION(cr.serviceTime) / 1e6),
-        elapsedTimeMs = ROUND(STR_TO_DURATION(cr.elapsedTime) / 1e6),
-        queueTime = DURATION_TO_STR(STR_TO_DURATION(cr.elapsedTime) - STR_TO_DURATION(cr.serviceTime)),
-        queueTimeMs = ROUND(
-          (STR_TO_DURATION(cr.elapsedTime) - STR_TO_DURATION(cr.serviceTime)) / 1e6
-        , 3),
-        querySelectivityPercent = ROUND(IFNULL(
-          (
-            cr.resultCount /
-            IFMISSING(cr.phaseCounts.\`indexScan\`, 0)
-          ) * 100,
-        0), 2),
-        cost = ARRAY_SUM(OBJECT_VALUES(IFMISSINGORNULL(phaseCounts, {})))
+    LET requestTimeMs = STR_TO_MILLIS(STR_TO_UTC(REPLACE(REGEX_REPLACE(REPLACE(REPLACE(REGEX_REPLACE(cr.requestTime, \" [A-Z]{3}$\", ''), ' -', '-'), ' +', '+'), '00$', ':00'), ' ', 'T'))),
+      serviceTimeMs = ROUND(STR_TO_DURATION(cr.serviceTime) / 1e6),
+      elapsedTimeMs = ROUND(STR_TO_DURATION(cr.elapsedTime) / 1e6),
+      queueTime = DURATION_TO_STR(STR_TO_DURATION(cr.elapsedTime) - STR_TO_DURATION(cr.serviceTime)),
+      queueTimeMs = ROUND(
+        (STR_TO_DURATION(cr.elapsedTime) - STR_TO_DURATION(cr.serviceTime)) / 1e6
+      , 3),
+      querySelectivityPercent = ROUND(IFNULL(
+        (
+          cr.resultCount /
+          IFMISSING(cr.phaseCounts.\`indexScan\`, 0)
+        ) * 100,
+      0), 2),
+      cost = ARRAY_SUM(OBJECT_VALUES(IFMISSINGORNULL(phaseCounts, {}))),
+      stmt = IFMISSING(cr.preparedText, cr.statement),
+      source = SPLIT(
+        REGEX_REPLACE(
+          IFMISSINGORNULL(
+            ARRAY_REVERSE(
+              REGEXP_MATCHES(
+                stmt,
+                \"(([Ii][Nn]|[Uu][Pp])[Ss][Ee][Rr][Tt]\\\\s+[Ii][Nn][Tt][Oo]|[Uu][Pp][Dd][Aa][Tt][Ee]|[Ff][Rr][Oo][Mm])\\\\s+\`?[^ ]+\"
+              )
+            )[0],
+            \"Unknown\"
+          ),
+          \"^[^ ]+\\\\s+\`?\", \"\", 1),
+        \".\"
+      )
     WHERE cr.node = NODE_NAME()
-        AND IFMISSINGORNULL(cr.clientContextID, '') NOT LIKE 'INTERNAL-%'
-        AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE 'INFER %'
-        AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE 'ADVISE %'
-        AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE '%CREATE INDEX%'
-        AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE '%ALTER INDEX%'
-        AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE '% SYSTEM:%'
-        AND requestTimeMs >= ROUND(STR_TO_MILLIS(NOW_UTC()), 0) - \$duration
-        AND elapsedTimeMs >= \$minElapsedTime
-        AND IFMISSINGORNULL(cr.phaseCounts.\`fetches\`, 0) >= \$minFetches
-        AND cr.resultCount >= \$minResultCount
-        AND cr.resultSize >= \$minResultSize
+      AND IFMISSINGORNULL(cr.clientContextID, '') NOT LIKE 'INTERNAL-%'
+      AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE 'INFER %'
+      AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE 'ADVISE %'
+      AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE '%CREATE INDEX%'
+      AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE '%ALTER INDEX%'
+      AND UPPER(IFMISSING(cr.preparedText, cr.statement)) NOT LIKE '% SYSTEM:%'
+      AND requestTimeMs >= ROUND(STR_TO_MILLIS(NOW_UTC()), 0) - 60000
     ORDER BY requestTimeMs ASC"
 
   echo "$n1ql"
