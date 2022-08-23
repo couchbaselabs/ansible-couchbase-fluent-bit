@@ -11,7 +11,7 @@
     Port        ${LOKI_PORT}
     Labels      job=couchbase-fluentbit
     # These should be present in the log record - see the `filter-handle-*.conf` as well
-    Label_keys  $file,$level,$couchbase['cluster_name'],$couchbase['server_version'],$couchbase['node']
+    Label_keys  $file,$level,$couchbase['cluster_name'],$couchbase['server_version'],$couchbase['node'],$bucket
     Workers     ${LOKI_WORKERS}
     # Loki does not support out-of-order streams so no point retrying as soon as we hit a failure
     Retry_Limit no_retries
