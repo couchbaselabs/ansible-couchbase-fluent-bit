@@ -39,6 +39,18 @@
     - eventing.log
     - fts.log
 
+- name: Include Indexer and Projector File Inputs
+  ansible.builtin.template:
+    src: "conf/couchbase/input/in-indexer-projector-log.conf.j2"
+    dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
+    owner: "{{ fluent_bit_user }}"
+    group: "{{ fluent_bit_user_group }}"
+    mode: 0664
+  when: item in couchbase_logs
+  with_items:
+    - indexer.log
+    - projector.log
+
 - name: Include Erlang Log Files
   ansible.builtin.template:
     src: "conf/couchbase/input/in-erlang-multiline-log.conf.j2"
