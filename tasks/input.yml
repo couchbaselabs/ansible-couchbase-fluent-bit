@@ -26,6 +26,7 @@
     - prometheus.log
     - xdcr.log
     - rebalance-report
+    - query.log
 
 - name: Include Eventing and FTS File Inputs
   ansible.builtin.template:

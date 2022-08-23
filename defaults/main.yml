@@ -47,6 +47,7 @@ couchbase_logs:
   - fts.log    # in-eventing-fts-log.conf
   - http.log    # real file, http_access.log and http_access_internal.log, in-http-log.conf
   - indexer.log    # in-indexer-projector.conf
+  - query.log      # in-query-log.conf
   - projector.log    # in-indexer-projector.conf
   - analytics.log    # in-java-log.conf
   - memcached.log    # in-memcached-log.conf
@@ -64,6 +65,7 @@ fluent_bit_mbl_couchbase_erlang: false
 fluent_bit_mbl_couchbase_eventing: false
 fluent_bit_mbl_couchbase_http: false
 fluent_bit_mbl_couchbase_index_projector: false
+fluent_bit_mbl_couchbase_query: false
 fluent_bit_mbl_couchbase_java: false
 fluent_bit_mbl_couchbase_memcached: false
 fluent_bit_mbl_couchbase_prometheus: false

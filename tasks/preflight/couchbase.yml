@@ -44,6 +44,7 @@
       - http_access.log
       - http_access_internal.log
       - indexer.log
+      - query.log
       - projector.log
       - analytics.log
       - memcached.log
