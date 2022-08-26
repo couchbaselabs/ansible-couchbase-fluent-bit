@@ -26,6 +26,13 @@
     Nest_under couchbase
     Remove_prefix couchbase.
 
+# Add a bucket attribute if it doesn't exist
+[FILTER]
+    Name    modify
+    Match   couchbase.log.*
+    Condition Key_Does_Not_Exist bucket
+    Add bucket undefined
+
 # [Filter]
 #     Name    lua
 #     Match   couchbase.log.*
