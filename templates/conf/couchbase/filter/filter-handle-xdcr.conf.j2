@@ -9,9 +9,9 @@
     # Keep everything else
     Reserve_Data On
 
-# Add a component attribute if it doesn't exist
+# Add a component attribute if it doesn't exist, xdcr logging is consistent so this shouldn't happen
 [FILTER]
     Name    modify
     Match   couchbase.log.xdcr
     Condition Key_Does_Not_Exist component
-    Add component undefined
+    Add component Unknown
