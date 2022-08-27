@@ -127,7 +127,7 @@
 [PARSER]
     Name couchbase_bucket_babysitter
     Format regex
-    # For memcached.log some messages contain the bucket name at the start of the message
+    # For babysitter.log some messages contain the bucket name at the start of the message
     # i.e. babysitter_of_ns_1@cb.local:<0.114.0>:ns_port_server:log:224]memcached<0.114.0>: 2022-08-27T01:09:32.837454+00:00 WARNING (demo) Slow runtime for 'Pag
     Regex ^babysitter_of.+:\s+\d{4}-\d{2}-\d{2}[^ ]+\s+\w+\s+\((?<bucket>[A-Za-z0-9-_]*)\).+
 
@@ -135,6 +135,13 @@
 [PARSER]
     Name couchbase_bucket_xdcr
     Format regex
-    # For memcached.log some messages contain the bucket name at the start of the message
-    # i.e. babysitter_of_ns_1@cb.local:<0.114.0>:ns_port_server:log:224]memcached<0.114.0>: 2022-08-27T01:09:32.837454+00:00 WARNING (demo) Slow runtime for 'Pag
-    Regex ^\s*(GOXDCR\.BucketTopologySvc\w+:\s*|.+[a-z0-9]{32}\/)(?<bucket>[A-Za-z0-9-_]+).+
+    # For goxdcr.log find patterns to get the bucket name
+    # i.e. 49b21c3086505cd12523e34294586d8a/demo/demo or GOXDCR.BucketTopologySvc: demo
+    Regex ^\s*(GOXDCR\.(BucketTopologySvc|StatsMgr)\w+:\s*|.+[a-z0-9]{32}\/)(?<bucket>[A-Za-z0-9-_]+).+
+
+# Get XDCR Component from goxdcr.log
+[PARSER]
+    Name couchbase_xdcr_component
+    Format regex
+    # i.e. GOXDCR.BucketTopologySvc:
+    Regex ^\s*GOXDCR\.(?<component>[A-Za-z0-9-_]+)(:|\s*).+
