@@ -24,7 +24,7 @@
 [PARSER]
     Name         couchbase_simple_log
     Format       regex
-    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+(\+|-)\d+:\d+)\s+\[(?<level>\w+)\](?<message>.*)$
+    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+(\+|-)\d+:\d+)\s+\[(?<level>\w+)\]\s*(?<message>.*)$
     Time_Key     timestamp
     Time_Format  %Y-%m-%dT%H:%M:%S.%L%z
     Time_Keep    On
@@ -45,7 +45,7 @@
 [PARSER]
     Name         couchbase_simple_log_utc
     Format       regex
-    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+Z)\s+(?<level>\w+)(?<message>.*)$
+    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+Z)\s+(?<level>\w+)\s*(?<message>.*)$
     Time_Key     timestamp
     Time_Format  %Y-%m-%dT%H:%M:%S.%LZ
     Time_Keep    On
@@ -57,7 +57,7 @@
 [PARSER]
     Name         couchbase_simple_log_mixed
     Format       regex
-    Regex        ^(?<timestamp>\d+(-|/)\d+(-|/)\d+(T|\s+)\d+:\d+:\d+(\.\d+(\+|-)\d+:\d+|))\s+((\[)?(?<level>\w+)(\]|:))(?<message>.*)$
+    Regex        ^(?<timestamp>\d+(-|/)\d+(-|/)\d+(T|\s+)\d+:\d+:\d+(\.\d+(\+|-)\d+:\d+|))\s+((\[)?(?<level>\w+)(\]|:))\s*(?<message>.*)$
     Time_Key     timestamp
     Time_Keep    On
 # We cannot parse the time as different formats directly, it could be done downstream and/or left as current time
@@ -66,8 +66,8 @@
     Name         couchbase_erlang_multiline
     Format       regex
     # For some reason this cannot parse an ending close bracket ] followed by a new line immediately
-    #Regex        \[(?<logger>\w+):(?<level>\w+),(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+.\d+Z),.*\](?<message>.*)$
-    Regex        \[(?<logger>\w+):(?<level>\w+),(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+.\d+Z),(?<message>.*)$
+    #Regex        \[(?<logger>\w+):(?<level>\w+),(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+.\d+Z),.*\]\s*(?<message>.*)$
+    Regex        \[(?<logger>\w+):(?<level>\w+),(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+.\d+Z),\s*(?<message>.*)$
     Time_Key     timestamp
     Time_Format  %Y-%m-%dT%H:%M:%S.%L
     Time_Keep    On
@@ -106,7 +106,7 @@
 [PARSER]
     Name         couchbase_slow_query_parser
     Format       regex
-    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+Z)\s+\[(?<level>\w+)\](?<message>.*)$
+    Regex        ^(?<timestamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+Z)\s+\[(?<level>\w+)\]\s*(?<message>.*)$
     Time_Key     timestamp
     Time_Format  %Y-%m-%dT%H:%M:%S.%LZ
 
