@@ -1,0 +1,17 @@
+# Add logging component name from goxdcr.log
+[FILTER]
+    Name parser
+    Match couchbase.log.indexer
+    Key_Name message
+    Parser couchbase_indexer_component
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On
+
+# Add a component attribute if it doesn't exist
+[FILTER]
+    Name    modify
+    Match   couchbase.log.indexer
+    Condition Key_Does_Not_Exist component
+    Add component Unknown
