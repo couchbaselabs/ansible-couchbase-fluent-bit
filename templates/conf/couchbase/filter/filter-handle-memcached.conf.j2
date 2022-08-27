@@ -1,0 +1,10 @@
+# Add logging component name from goxdcr.log
+[FILTER]
+    Name parser
+    Match couchbase.log.memcached
+    Key_Name message
+    Parser couchbase_memcached_helo
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On

@@ -121,7 +121,7 @@
     Format regex
     # For memcached.log some messages contain the bucket name at the start of the message
     # i.e. (name_of_bucket) message...
-    Regex ^\((?<bucket>[A-Za-z0-9-_]*)\).+
+    Regex ^\s*\((?<bucket>[A-Za-z0-9-_]*)\).+
 
 # Get Bucket Name from babysitter.log
 [PARSER]
@@ -152,3 +152,10 @@
     Format regex
     # i.e. lifecycleMgr.dispatchRequest, messageListener.start(), DDLServiceMgr::cleanupTokens, janitor:
     Regex ^\s*(?<component>([A-Za-z0-9]+(::|\.))?[A-Za-z0-9]+(\s+(new\s+stats|metadata))?)(\s*\(\)|:|\s+).+
+
+# Get Client Info for HELOs Logging Component from memcached.log
+[PARSER]
+    Name couchbase_memcached_helo
+    Format regex
+    # i.e. 413: HELO [{\"a\":\"libcouchbase/3.2.5-njs, 430: HELO [cbmultimanager/v0.3.0] [ {
+    Regex ^(\d+:\s+)?HELO\s+(\[\{"a":"|\[)(?<client_sdk>[^"\(\]]+)[^\{]+\{"ip":"(?<client_ip>[^"\\]+)([^\n\<]+\<ud\>|.+\s+\()(?<user>[^\<\)]+).+
