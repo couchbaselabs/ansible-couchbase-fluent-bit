@@ -1,0 +1,40 @@
+# Add Bucket name from memcached.log
+[FILTER]
+    Name parser
+    Match couchbase.log.memcached
+    Key_Name message
+    Parser couchbase_bucket_memcached
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On
+
+# Add Bucket name from babysitter.log
+[FILTER]
+    Name parser
+    Match couchbase.log.babysitter
+    Key_Name message
+    Parser couchbase_bucket_babysitter
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On
+
+# Add Bucket name from goxdcr.log
+[FILTER]
+    Name parser
+    Match couchbase.log.goxdcr
+    Key_Name message
+    Parser couchbase_bucket_xdcr
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On
+
+
+# Add a bucket attribute if it doesn't exist
+[FILTER]
+    Name    modify
+    Match   couchbase.log.*
+    Condition Key_Does_Not_Exist bucket
+    Add bucket undefined

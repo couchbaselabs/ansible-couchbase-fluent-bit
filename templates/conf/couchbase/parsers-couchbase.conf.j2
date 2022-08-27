@@ -114,3 +114,27 @@
 [PARSER]
     Name        to_json
     Format      json
+
+# Get Bucket Name from memcached.log
+[PARSER]
+    Name couchbase_bucket_memcached
+    Format regex
+    # For memcached.log some messages contain the bucket name at the start of the message
+    # i.e. (name_of_bucket) message...
+    Regex ^\((?<bucket>[A-Za-z0-9-_]*)\).+
+
+# Get Bucket Name from babysitter.log
+[PARSER]
+    Name couchbase_bucket_babysitter
+    Format regex
+    # For memcached.log some messages contain the bucket name at the start of the message
+    # i.e. babysitter_of_ns_1@cb.local:<0.114.0>:ns_port_server:log:224]memcached<0.114.0>: 2022-08-27T01:09:32.837454+00:00 WARNING (demo) Slow runtime for 'Pag
+    Regex ^babysitter_of.+:\s+\d{4}-\d{2}-\d{2}[^ ]+\s+\w+\s+\((?<bucket>[A-Za-z0-9-_]*)\).+
+
+# Get Bucket Name from goxdcr.log
+[PARSER]
+    Name couchbase_bucket_xdcr
+    Format regex
+    # For memcached.log some messages contain the bucket name at the start of the message
+    # i.e. babysitter_of_ns_1@cb.local:<0.114.0>:ns_port_server:log:224]memcached<0.114.0>: 2022-08-27T01:09:32.837454+00:00 WARNING (demo) Slow runtime for 'Pag
+    Regex ^\s*(GOXDCR\.BucketTopologySvc\w+:\s*|.+[a-z0-9]{32}\/)(?<bucket>[A-Za-z0-9-_]+).+

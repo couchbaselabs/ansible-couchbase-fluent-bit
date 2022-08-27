@@ -18,6 +18,7 @@
 # Deal with missing/incorrect level & filename information
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-levels.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-filenames.conf
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-bucket.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-streams.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-audit.conf
 
