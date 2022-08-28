@@ -87,7 +87,7 @@
 [PARSER]
     Name         couchbase_http
     Format       regex
-    Regex        ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<timestamp>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) - (?<client>.*)$
+    Regex        ^(?<host>[^ ]*)\s+[^ ]*\s+(?<user>[^ ]*)\s+\[(?<timestamp>[^\]]*)\]\s+"(?<method>\S+)\s+(?<path>[^ \?]+)\??(?<query_string>[^ \?]+)?\s+\S+"\s+(?<code>[^ ]*)\s+(?<size>[^ ]*)\s+-\s+"?(?<client>[^"]+)"?.*
     Time_Key     timestamp
     Time_Format %d/%b/%Y:%H:%M:%S %z
     Time_Keep    On
