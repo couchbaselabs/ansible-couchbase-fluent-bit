@@ -22,6 +22,7 @@
 # Add bucket where possible and logging component
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-bucket.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-component.conf
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-memcached.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-audit.conf
 
 # Handle Stream Tags
