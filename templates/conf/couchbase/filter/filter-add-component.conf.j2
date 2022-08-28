@@ -42,6 +42,17 @@
     # Keep everything else
     Reserve_Data On
 
+# Add logging component name from projector.log
+[FILTER]
+    Name parser
+    Match couchbase.log.projector
+    Key_Name message
+    Parser couchbase_projector_component
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On
+
 # Add Filter to add component=rest field to couchbase.log.audit
 [FILTER]
     Name          modify
@@ -101,6 +112,6 @@
 # Add a component attribute if it doesn't exist
 [FILTER]
     Name    modify
-    Match   couchbase.log.xdcr,couchbase.log.indexer,couchbase.log.analytics,couchbase.log.eventing,couchbase.log.audit
+    Match   couchbase.log.xdcr,couchbase.log.indexer,couchbase.log.analytics,couchbase.log.eventing,couchbase.log.projector,couchbase.log.audit
     Condition Key_Does_Not_Exist component
     Add component Unknown

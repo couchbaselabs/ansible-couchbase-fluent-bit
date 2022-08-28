@@ -173,3 +173,10 @@
     Format regex
     # i.e. SuperSupervisor::NotifyPrepareTopologyChange
     Regex ^\s*(?<component>([A-Za-z0-9]+::)?[A-Za-z0-9]+):?\s+.+
+
+# Get Projector Logging Component from projector.log
+[PARSER]
+    Name couchbase_projector_component
+    Format regex
+    # i.e. WRKR[<-demo<-127.0.0.1:8091 #MAINT_STREAM_TOPIC_3a61a68eeca8a0cbb2b2dbf5, Projector stats:
+    Regex ^\s*(?<component>[A-Za-z0-9 ]+|[A-Za-z0-9]+|)(\[|:|\s+).+
