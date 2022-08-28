@@ -101,6 +101,6 @@
 # Add a component attribute if it doesn't exist
 [FILTER]
     Name    modify
-    Match   couchbase.log.xdcr,couchbase.log.indexer,couchbase.log.analytics,couchbase.log.audit
+    Match   couchbase.log.xdcr,couchbase.log.indexer,couchbase.log.analytics,couchbase.log.eventing,couchbase.log.audit
     Condition Key_Does_Not_Exist component
     Add component Unknown
