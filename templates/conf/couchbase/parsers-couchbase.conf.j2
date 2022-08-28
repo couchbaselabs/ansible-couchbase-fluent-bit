@@ -160,9 +160,16 @@
     # i.e. 413: HELO [{\"a\":\"libcouchbase/3.2.5-njs, 430: HELO [cbmultimanager/v0.3.0] [ {
     Regex ^(\d+:\s+)?HELO\s+(\[\{"a":"|\[)(?<client_sdk>[^"\(\]]+)[^\{]+\{"ip":"(?<client_ip>[^"\\]+)([^\n\<]+\<ud\>|.+\s+\()(?<user>[^\<\)]+).+
 
-# Get Analytics Logging Component from goxdcr.log
+# Get Analytics Logging Component from analytics.log
 [PARSER]
     Name couchbase_analytics_component
     Format regex
     # i.e. CBAS.work.JobCleanupWork [Worker:ClusterController]
     Regex ^\s*(?<component>CBAS\.[A-Za-z0-9-_\.]+)\s+.+
+
+# Get Eventing Logging Component from eventing.log
+[PARSER]
+    Name couchbase_eventing_component
+    Format regex
+    # i.e. SuperSupervisor::NotifyPrepareTopologyChange
+    Regex ^\s*(?<component>([A-Za-z0-9]+::)?[A-Za-z0-9]+):?\s+.+

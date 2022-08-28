@@ -31,6 +31,17 @@
     # Keep everything else
     Reserve_Data On
 
+# Add logging component name from eventing.log
+[FILTER]
+    Name parser
+    Match couchbase.log.eventing
+    Key_Name message
+    Parser couchbase_eventing_component
+    # Do not overwrite original field
+    Preserve_Key On
+    # Keep everything else
+    Reserve_Data On
+
 # Add Filter to add component=rest field to couchbase.log.audit
 [FILTER]
     Name          modify
