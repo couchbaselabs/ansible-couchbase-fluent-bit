@@ -14,7 +14,7 @@ User={{ fluent_bit_user }}
 Group={{ fluent_bit_user_group }}
 {% endif %}
 WorkingDirectory={{ fluent_bit_conf_dir }}
-EnvironmentFile=-{{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file}}
+EnvironmentFile={{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file}}
 
 ExecStart={{ _fluent_bit_binary_install_dir }}/fluent-bit -c {{ fluent_bit_conf_dir}}/{{ fluent_bit_conf_file}}
 
