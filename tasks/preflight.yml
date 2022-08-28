@@ -175,7 +175,7 @@
     - name: Set the Fluent Bit Version
       ansible.builtin.set_fact:
         fluent_bit_version: "{{ _fluent_bit_version_request.stdout | string }}"
-  when: fluent_bit_version == 'latest' and __fluent_bit_local_install
+  when: fluent_bit_version == 'latest' and not __fluent_bit_local_install
 
 # Couchbase preflight checks
 - include_tasks:
