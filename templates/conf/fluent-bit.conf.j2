@@ -18,12 +18,14 @@
 # Deal with missing/incorrect level & filename information
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-levels.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-filenames.conf
-@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-bucket.conf
-@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-memcached.conf
-@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-xdcr.conf
-@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-analytics.conf
-@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-streams.conf
+
+# Add bucket where possible and logging component
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-bucket.conf
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-add-component.conf
 @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-audit.conf
+
+# Handle Stream Tags
+@include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-handle-streams.conf
 
 # Optionally include this to get common problems duplicated to a specific stream
 # @include {{ fluent_bit_conf_dir }}/couchbase/filter/filter-common-problems.conf
