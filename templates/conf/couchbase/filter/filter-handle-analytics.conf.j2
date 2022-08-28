@@ -1,9 +1,9 @@
-# Add logging component name from indexer.log
+# Add logging component name from analytics.log
 [FILTER]
     Name parser
-    Match couchbase.log.indexer
+    Match couchbase.log.analytics
     Key_Name message
-    Parser couchbase_indexer_component
+    Parser couchbase_analytics_component
     # Do not overwrite original field
     Preserve_Key On
     # Keep everything else
@@ -12,6 +12,6 @@
 # Add a component attribute if it doesn't exist
 [FILTER]
     Name    modify
-    Match   couchbase.log.indexer
+    Match   couchbase.log.analytics
     Condition Key_Does_Not_Exist component
     Add component Unknown
