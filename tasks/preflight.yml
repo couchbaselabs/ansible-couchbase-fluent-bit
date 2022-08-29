@@ -170,6 +170,9 @@
           | grep -m 1 tag_name \
           | cut -d '"' -f 4 | cut -c 2-
       changed_when: false
+      run_once: true
+      delegate_to: localhost
+      become: false
       register: _fluent_bit_version_request
 
     - name: Set the Fluent Bit Version
@@ -183,7 +186,7 @@
 
 - name: Set whether or not to do the install
   ansible.builtin.set_fact:
-    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version(fluent_bit_version, '<', version_type='semver') }}"
+    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version_compare(fluent_bit_version, '<') }}"
 
 - name: Do Install
   ansible.builtin.debug:
