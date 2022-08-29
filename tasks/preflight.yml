@@ -141,7 +141,7 @@
   ansible.builtin.debug:
     var: __fluent_bit_is_installed.stat.exists
 
-- name: Install Checks    # var-spacing
+- name: Install Checks    # noqa var-spacing
   block:
     - name: Gather currently installed fluent-bit version
       ansible.builtin.command:
@@ -151,7 +151,7 @@
       register: __fluent_bit_current_version_output
       check_mode: false
 
-    - name: Set fluent-bit Installed Version    # var-spacing
+    - name: Set fluent-bit Installed Version    # noqa var-spacing
       ansible.builtin.set_fact:
         fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace( '\\n.+$|^.+v', '' ) }}"
 
