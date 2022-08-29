@@ -153,7 +153,7 @@
 
     - name: Set fluent-bit Installed Version
       ansible.builtin.set_fact:
-        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$|^.+v', '') }}"
+        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace( '\\n.+$|^.+v', '' ) }}"
 
     - name: fluent-bit Installed Version
       ansible.builtin.debug:
