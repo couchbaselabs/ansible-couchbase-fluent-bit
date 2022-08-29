@@ -72,17 +72,17 @@
     group: "{{ fluent_bit_user_group }}"
     mode: 0775
 
-- name: Create main conf file
-  ansible.builtin.template:
-    src: "conf/fluent-bit.conf.j2"
+- name: Copy main fluent-bit.conf file
+  ansible.builtin.copy:
+    src: "conf/fluent-bit.conf"
     dest: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
     mode: 0664
 
-- name: Create service, parsers, and streams conf files
-  ansible.builtin.template:
-    src: "conf/couchbase/{{ item }}.j2"
+- name: Copy service, parsers, and streams conf files
+  ansible.builtin.copy:
+    src: "conf/couchbase/{{ item }}"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/{{ item }}"
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
@@ -100,15 +100,15 @@
     group: "{{ fluent_bit_user_group }}"
     mode: 0775
 
-- name: Create Filter conf files
-  ansible.builtin.template:
+- name: Copy Filter conf files
+  ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "{{ fluent_bit_conf_dir }}/couchbase/filter/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    dest: "{{ fluent_bit_conf_dir }}/couchbase/filter/{{ item | basename }}"
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
     mode: 0664
   with_fileglob:
-    - ../templates/conf/couchbase/filter/*.j2
+    - conf/couchbase/filter/*.conf
 
 # Handle Scripts
 - name: Create Scripts Directory
@@ -151,6 +151,16 @@
       tags:
         - fluent_bit_configure
 
+- name: "Replace all instances of /etc/fluent-bit with {{ fluent_bit_conf_dir }}"
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: "/etc/fluent-bit"
+    replace: "{{ fluent_bit_conf_dir }}"
+  when: fluent_bit_conf_dir != '/etc/fluent-bit'
+  with_items:
+    - "{{ fluent_bit_conf_dir }}/fluent-bit.conf"
+    - "{{ fluent_bit_conf_dir }}/couchbase/service.conf"
+
 - name: Cleanup Original Files
   ansible.builtin.file:
     path: "{{ fluent_bit_conf_dir }}/{{ item }}"
@@ -158,6 +168,10 @@
   with_items:
     - parsers.conf
     - plugins.conf
+    - couchbase/input/in-eventing-fts-log.conf
+    - couchbase/input/in-erlang-multiline-log.conf
+    - couchbase/input/in-index-projector-log.conf
+  ignore_errors: true    # noqa ignore-errors
 
 # - name: Uncomment filter-common-problems
 #   replace:

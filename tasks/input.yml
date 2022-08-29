@@ -10,72 +10,78 @@
 # For simplicity several inputs can manage multiple log files, so not be repeated.  However, to manage
 # it is easier to have a separate conf file for each log file monitored and they can be dynamically
 # included through globbing i.e. conf/couchbase/input/in-*.conf
-- name: Include Single File Inputs
-  ansible.builtin.template:
-    src: "conf/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf.j2"
+- name: Copy Single File Inputs
+  ansible.builtin.copy:
+    src: "conf/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
     dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
     owner: "{{ fluent_bit_user }}"
     group: "{{ fluent_bit_user_group }}"
     mode: 0664
   when: item in couchbase_logs
   with_items:
-    - audit.log
-    - http.log
     - analytics.log
-    - memcached.log
-    - prometheus.log
-    - xdcr.log
-    - rebalance-report
-    - query.log
-
-- name: Include Eventing and FTS File Inputs
-  ansible.builtin.template:
-    src: "conf/couchbase/input/in-eventing-fts-log.conf.j2"
-    dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
-    owner: "{{ fluent_bit_user }}"
-    group: "{{ fluent_bit_user_group }}"
-    mode: 0664
-  when: item in couchbase_logs
-  with_items:
-    - eventing.log
-    - fts.log
-
-- name: Include Indexer and Projector File Inputs
-  ansible.builtin.template:
-    src: "conf/couchbase/input/in-indexer-projector-log.conf.j2"
-    dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
-    owner: "{{ fluent_bit_user }}"
-    group: "{{ fluent_bit_user_group }}"
-    mode: 0664
-  when: item in couchbase_logs
-  with_items:
-    - indexer.log
-    - projector.log
-
-- name: Include Erlang Log Files
-  ansible.builtin.template:
-    src: "conf/couchbase/input/in-erlang-multiline-log.conf.j2"
-    dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
-    owner: "{{ fluent_bit_user }}"
-    group: "{{ fluent_bit_user_group }}"
-    mode: 0664
-  when: item in couchbase_logs
-  with_items:
+    - audit.log
     - babysitter.log
     - couchdb.log
     - debug.log
+    - eventing.log
+    - fts.log
+    - http.log
+    - indexer.log
     - json_rpc.log
     - mapreduce_errors.log
+    - memcached.log
     - metakv.log
     - ns_couchdb.log
+    - projector.log
+    - prometheus.log
+    - query.log
+    - rebalance-report
     - reports.log
+    - xdcr.log
 
-- name: Include Slow Query Exec Input
-  ansible.builtin.template:
-    src: "conf/couchbase/input/in-slow-query-exec.conf.j2"
-    dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"
-    owner: "{{ fluent_bit_user }}"
-    group: "{{ fluent_bit_user_group }}"
-    mode: 0664
-  # only include when slow query logging is enabled and and the node is a query node
-  when: couchbase_enable_slow_query_logging and "n1ql" in couchbase_services
+- name: Remove Single File Inputs that have been excluded
+  ansible.builtin.file:
+    path: "{{ fluent_bit_conf_dir }}/{{ item }}"
+    state: absent
+  when: item not in couchbase_logs
+  with_items:
+    - analytics.log
+    - audit.log
+    - babysitter.log
+    - couchdb.log
+    - debug.log
+    - eventing.log
+    - fts.log
+    - http.log
+    - indexer.log
+    - json_rpc.log
+    - mapreduce_errors.log
+    - memcached.log
+    - metakv.log
+    - ns_couchdb.log
+    - projector.log
+    - prometheus.log
+    - query.log
+    - rebalance-report
+    - reports.log
+    - xdcr.log
+
+
+- name: Slow Query Exec
+  block:
+    - name: Copy Slow Query Exec Input
+      ansible.builtin.copy:
+        src: "conf/couchbase/input/in-slow-query-exec.conf"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"
+        owner: "{{ fluent_bit_user }}"
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0664
+      # only include when slow query logging is enabled and and the node is a query node
+      when: couchbase_enable_slow_query_logging and "n1ql" in couchbase_services
+
+    - name: Add Additional Slow Query Exec Args to File
+      ansible.builtin.replace:
+        path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-slow-query-exec.conf"
+        regexp: "/etc/fluent-bit[^\n]+"
+        replace: "{{ fluent_bit_conf_dir }}/couchbase/scripts/query-logger {{ couchbase_slow_query_exec_args | default('') }}"

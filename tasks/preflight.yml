@@ -153,7 +153,7 @@
 
     - name: Set fluent-bit Installed Version
       ansible.builtin.set_fact:
-        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$', '') }}"
+        fluent_bit_installed_version: "{{ __fluent_bit_current_version_output.stdout | regex_replace('\\n.+$|^.+v', '') }}"
 
     - name: fluent-bit Installed Version
       ansible.builtin.debug:
@@ -174,7 +174,7 @@
 
     - name: Set the Fluent Bit Version
       ansible.builtin.set_fact:
-        fluent_bit_version: "{{ _fluent_bit_version_request.stdout | string }}"
+        fluent_bit_version: "{{ _fluent_bit_version_request.stdout | string | regex_replace('^.*v', '') }}"
   when: fluent_bit_version == 'latest' and not __fluent_bit_local_install
 
 # Couchbase preflight checks
@@ -183,7 +183,7 @@
 
 - name: Set whether or not to do the install
   ansible.builtin.set_fact:
-    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version_compare(fluent_bit_version, '<') }}"
+    __fluent_bit_do_install: "{{  not __fluent_bit_is_installed.stat.exists or fluent_bit_installed_version is version(fluent_bit_version, '<', version_type='semver') }}"
 
 - name: Do Install
   ansible.builtin.debug:

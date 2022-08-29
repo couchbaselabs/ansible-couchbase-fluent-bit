@@ -1,7 +1,7 @@
 ---
 # Fluent Bit Variables
 fluent_bit_version: latest
-fluent_bit_storage_buffer_path: /var/lib/fluent-bit/buffer
+fluent_bit_storage_buffer_path: /var/lib/fluent-bit
 fluent_bit_http_listen: 0.0.0.0
 fluent_bit_http_port: 2020
 fluent_bit_conf_dir: /etc/fluent-bit
@@ -91,9 +91,9 @@ fluent_bit_loki_match: couchbase.log.*
 fluent_bit_loki_host: localhost
 fluent_bit_loki_port: 3100
 fluent_bit_loki_workers: 1
-fluent_bit_loki_http_user: null
-fluent_bit_loki_http_passwd: null
-fluent_bit_loki_tenant_id: null
+fluent_bit_loki_http_user: ""
+fluent_bit_loki_http_passwd: ""
+fluent_bit_loki_tenant_id: ""
 fluent_bit_loki_tls: "off"
 fluent_bit_loki_tls_verify: "off"
 
