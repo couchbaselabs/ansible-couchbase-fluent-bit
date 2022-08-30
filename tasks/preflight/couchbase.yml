@@ -29,29 +29,26 @@
 - name: Set Valid Couchbase Log Files
   ansible.builtin.set_fact:
     __valid_couchbase_logs:
+      - analytics.log
       - audit.log
       - babysitter.log
       - couchdb.log
       - debug.log
-      - json_rpc.log
-      - mapreduce_errors.log
-      - metakv.log
-      - ns_couchdb.log
-      - reports.log
       - eventing.log
       - fts.log
       - http.log
-      - http_access.log
-      - http_access_internal.log
       - indexer.log
-      - query.log
-      - projector.log
-      - analytics.log
+      - json_rpc.log
+      - mapreduce_errors.log
       - memcached.log
+      - metakv.log
+      - ns_couchdb.log
+      - projector.log
       - prometheus.log
+      - query.log
       - rebalance-report
+      - reports.log
       - xdcr.log
-      - goxdcr.log
 
 - name: Fail when an invalid log file was specified
   ansible.builtin.fail:
@@ -105,23 +102,38 @@
     timeout: 5
     status_code:
       - 200
-  register: _results
-  until: _results.status == 200
+  register: _results_cluster
+  until: _results_cluster.status == 200
   retries: 15
   delay: 5
 
 - name: Set the Couchbase Cluster Name from the result of API call
   ansible.builtin.set_fact:
-    couchbase_cluster_name: "{{ _results.json.clusterName }}"
+    couchbase_cluster_name: "{{ _results_cluster.json.clusterName }}"
   when: not couchbase_cluster_name
 
 - name: Couchbase Cluster Name
   ansible.builtin.debug:
     msg: "{{ couchbase_cluster_name }}"
 
+- name: Get the Couchbase Node Info
+  no_log: true
+  ansible.builtin.uri:
+    url: http://127.0.0.1:8091/nodes/self
+    method: GET
+    user: "{{ couchbase_username }}"
+    password: "{{ couchbase_password }}"
+    timeout: 5
+    status_code:
+      - 200
+  register: _results_node
+  until: _results_node.status == 200
+  retries: 15
+  delay: 5
+
 - name: Set the Couchbase Node from the result of API call
   ansible.builtin.set_fact:
-    couchbase_node: "{{ _results.json | community.general.json_query('nodes[?thisNode].hostname | [0]') | regex_replace(':[0-9]+$', '') }}"
+    couchbase_node: "{{ _results_node.json.hostname | regex_replace(':[0-9]+$', '') }}"
 
 - name: Couchbase Node Name
   ansible.builtin.debug:
@@ -129,7 +141,7 @@
 
 - name: Set the Couchbase Server Version from the result of API call
   ansible.builtin.set_fact:
-    couchbase_server_version: "{{ _results.json | community.general.json_query('nodes[?thisNode].version | [0]') }}"
+    couchbase_server_version: "{{ _results_node.json.version }}"
   when: not couchbase_server_version
 
 - name: Couchbase Server Version
@@ -138,7 +150,7 @@
 
 - name: Set the Couchbase Services from the result of API call
   ansible.builtin.set_fact:
-    couchbase_services: "{{ _results.json | community.general.json_query('nodes[?thisNode].services | [0]') | join(',') }}"
+    couchbase_services: "{{ _results_node.json.services | join(',') }}"
 
 - name: Couchbase Services
   ansible.builtin.debug:
