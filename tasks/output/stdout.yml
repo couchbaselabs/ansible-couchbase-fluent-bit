@@ -1,0 +1,35 @@
+---
+- name: Add Standard Out
+  block:
+    - name: "Add stdout to {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: present
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+      when: fluent_bit_cbhealthagent_enabled
+
+    - name: Copy stdout Output conf file
+      ansible.builtin.copy:
+        src: "conf/couchbase/output/out-stdout.conf"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+        owner: "{{ fluent_bit_user }}"
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0664
+
+  when: fluent_bit_stdout_enabled
+
+- name: Remove Standard Out
+  block:
+    - name: "Remove stdout from {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+
+    - name: Remove Standard Out conf file
+      ansible.builtin.file:
+        path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+        state: absent
+      ignore_errors: true    # noqa ignore-errors
+
+  when: not fluent_bit_stdout_enabled

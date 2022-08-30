@@ -1,0 +1,34 @@
+---
+- name: Add cbhealthagent
+  block:
+    - name: "Add cbhealthagent to {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: present
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+
+    - name: Copy cbhealthagent Output conf file
+      ansible.builtin.copy:
+        src: "conf/couchbase/output/out-cbhealthagent.conf"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+        owner: "{{ fluent_bit_user }}"
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0664
+
+  when: fluent_bit_cbhealthagent_enabled
+
+- name: Remove cbhealthagent
+  block:
+    - name: "Remove cbhealthagent from {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+
+    - name: Remove cbhealthagent Output conf file
+      ansible.builtin.file:
+        path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+        state: absent
+      ignore_errors: true    # noqa ignore-errors
+
+  when: not fluent_bit_cbhealthagent_enabled

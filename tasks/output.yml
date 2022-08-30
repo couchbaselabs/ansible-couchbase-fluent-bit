@@ -7,223 +7,32 @@
     group: "{{ fluent_bit_user_group }}"
     mode: 0775
 
-- name: Configure Standard Out
-  block:
-    - name: Add stdout to conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
-      when: fluent_bit_cbhealthagent_enabled
+# Configure stdout
+- include_tasks:
+    file: output/stdout.yml
+    apply:
+      become: true
 
-    - name: Include stdout Output conf
-      ansible.builtin.copy:
-        src: "conf/couchbase/output/out-stdout.conf"
-        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
-        owner: "{{ fluent_bit_user }}"
-        group: "{{ fluent_bit_user_group }}"
-        mode: 0664
-      when: fluent_bit_cbhealthagent_enabled
+# Configure cbhealthagent
+- include_tasks:
+    file: output/cbhealthagent.yml
+    apply:
+      become: true
 
-    - name: Remove stdout from conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
-      when: not fluent_bit_cbhealthagent_enabled
+# Configure loki
+- include_tasks:
+    file: output/loki.yml
+    apply:
+      become: true
 
-- name: Configure cbhealthagent
-  block:
-    - name: Add cbhealthagent to conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
-      when: fluent_bit_cbhealthagent_enabled
+# Configure splunk
+- include_tasks:
+    file: output/splunk.yml
+    apply:
+      become: true
 
-    - name: Include cbhealthagent Output conf
-      ansible.builtin.copy:
-        src: "conf/couchbase/output/out-cbhealthagent.conf"
-        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
-        owner: "{{ fluent_bit_user }}"
-        group: "{{ fluent_bit_user_group }}"
-        mode: 0664
-      when: fluent_bit_cbhealthagent_enabled
-
-    - name: Remove cbhealthagent from conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
-      when: not fluent_bit_cbhealthagent_enabled
-
-- name: Configure Loki
-  block:
-    - name: Add Loki to conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-      when: fluent_bit_loki_enabled
-
-    - name: Include Loki Output conf
-      ansible.builtin.copy:
-        src: "conf/couchbase/output/out-loki.conf"
-        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-        owner: "{{ fluent_bit_user }}"
-        group: "{{ fluent_bit_user_group }}"
-        mode: 0664
-      when: fluent_bit_loki_enabled
-
-    - name: Remove Loki from conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-      when: not fluent_bit_loki_enabled
-
-    - name: Add Loki tenant_id
-      block:
-        - name: Add tenant_id
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: present
-            line: "    tenant_id   ${LOKI_TENANT_ID}"
-
-        - name: Remove tenant_id Comment
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: absent
-            line: "    # tenant_id   ${LOKI_TENANT_ID}"
-
-      when: fluent_bit_loki_enabled and (fluent_bit_loki_tenant_id | string | trim | length) > 0
-
-    - name: Remove Loki tenant_id
-      block:
-        - name: Add tenant_id Comment
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: present
-            line: "    # tenant_id   ${LOKI_TENANT_ID}"
-
-        - name: Remove tenant_id
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: absent
-            line: "    tenant_id   ${LOKI_TENANT_ID}"
-
-      when: fluent_bit_loki_enabled and (fluent_bit_loki_tenant_id | string | trim | length) == 0
-
-    - name: Add Loki HTTP User
-      block:
-        - name: Add http_user
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: present
-            line: "    http_user   ${LOKI_HTTP_USER}"
-
-        - name: Remove http_user Comment
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: absent
-            line: "    # http_user   ${LOKI_HTTP_USER}"
-
-      when: fluent_bit_loki_enabled and (fluent_bit_loki_http_user | string | trim | length) > 0
-
-    - name: Remove Loki HTTP User
-      block:
-        - name: Add http_user Comment
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: present
-            line: "    # http_user   ${LOKI_HTTP_USER}"
-
-        - name: Remove http_user
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: absent
-            line: "    http_user   ${LOKI_HTTP_USER}"
-
-      when: fluent_bit_loki_enabled and (fluent_bit_loki_http_user | string | trim | length) == 0
-
-    - name: Add Loki HTTP Passwd
-      block:
-        - name: Add http_passwd
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: present
-            line: "    http_passwd   ${LOKI_HTTP_PASSWD}"
-
-        - name: Remove http_passwd Comment
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: absent
-            line: "    # http_passwd   ${LOKI_HTTP_PASSWD}"
-
-      when: fluent_bit_loki_enabled and (fluent_bit_loki_http_passwd | string | trim | length) > 0
-
-    - name: Remove Loki HTTP Passwd
-      block:
-        - name: Add http_passwd Comment
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: present
-            line: "    # http_passwd   ${LOKI_HTTP_PASSWD}"
-
-        - name: Remove http_passwd
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
-            state: absent
-            line: "    http_passwd   ${LOKI_HTTP_PASSWD}"
-
-      when: fluent_bit_loki_enabled and (fluent_bit_loki_http_passwd | string | trim | length) == 0
-
-- name: Configure Splunk
-  block:
-    - name: Add Splunk to conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
-      when: fluent_bit_splunk_enabled
-
-    - name: Include Splunk Output conf
-      ansible.builtin.copy:
-        src: "conf/couchbase/output/out-splunk.conf"
-        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
-        owner: "{{ fluent_bit_user }}"
-        group: "{{ fluent_bit_user_group }}"
-        mode: 0664
-      when: fluent_bit_splunk_enabled
-
-    - name: Remove Splunk from conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
-      when: not fluent_bit_splunk_enabled
-
-- name: Configure Elasticsearch
-  block:
-    - name: Add Elasticsearch to conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
-      when: fluent_bit_es_enabled
-
-    - name: Include Elasticsearch Output conf
-      ansible.builtin.copy:
-        src: "conf/couchbase/output/out-elastic.conf"
-        dest: "{{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
-        owner: "{{ fluent_bit_user }}"
-        group: "{{ fluent_bit_user_group }}"
-        mode: 0664
-      when: fluent_bit_es_enabled
-
-    - name: Remove Elasticsearch from conf
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-elastic.conf"
-      when: not fluent_bit_es_enabled
+# Configure elasticsearch
+- include_tasks:
+    file: output/elasticsearch.yml
+    apply:
+      become: true
