@@ -20,13 +20,16 @@
     - fluent_bit_mbl_couchbase_audit
     - fluent_bit_mbl_couchbase_erlang
     - fluent_bit_mbl_couchbase_eventing
+    - fluent_bit_mbl_couchbase_fts
     - fluent_bit_mbl_couchbase_http
-    - fluent_bit_mbl_couchbase_index_projector
+    - fluent_bit_mbl_couchbase_index
+    - fluent_bit_mbl_couchbase_projector
     - fluent_bit_mbl_couchbase_java
     - fluent_bit_mbl_couchbase_memcached
     - fluent_bit_mbl_couchbase_prometheus
     - fluent_bit_mbl_couchbase_rebalance
     - fluent_bit_mbl_couchbase_xdcr
+    - fluent_bit_mbl_couchbase_query
 
 - name: Fail when variables do not have a length
   ansible.builtin.fail:

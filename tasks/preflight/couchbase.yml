@@ -6,7 +6,6 @@
   with_items:
     - couchbase_username
     - couchbase_password
-    - couchbase_install_dir
     - couchbase_cluster_name
     - couchbase_server_version
     - couchbase_logs_dir
@@ -20,7 +19,6 @@
   with_items:
     - couchbase_username
     - couchbase_password
-    - couchbase_install_dir
     - couchbase_logs_dir
     - couchbase_audit_logs_dir
     - couchbase_logs_rebalance_tmp_dir

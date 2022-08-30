@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Aaron Benton
-  description: Installs and Configures Fluent Bit for Couchbase Log Proccessing
+  description: Installs and Configures Fluent Bit for Couchbase Log Processing
   company: Couchbase
   license: Apache
   role_name: couchbaselabs.couchbase_fluent_bit

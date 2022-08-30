@@ -22,7 +22,6 @@ fluent_bit_local_binary_path: ""
 # Fluent Bit Couchbase Variables
 couchbase_username: Administrator
 couchbase_password: password
-couchbase_install_dir: /opt/couchbase
 couchbase_cluster_name:      # leave blank to be auto-populated at run-time
 couchbase_server_version:    # leave blank to be auto-populated at run-time
 couchbase_logs_dir: /opt/couchbase/var/lib/couchbase/logs
@@ -34,37 +33,39 @@ couchbase_fluent_bit_version: 1.2.1
 
 # Which log files to monitor
 couchbase_logs:
-  - audit.log    # in-audit-log.conf
-  - babysitter.log    # in-erlang-multiline-log.conf
-  - couchdb.log    # in-erlang-multiline-log.conf
-  - debug.log    # in-erlang-multiline-log.conf
-  - json_rpc.log    # in-erlang-multiline-log.conf
-  - mapreduce_errors.log    # in-erlang-multiline-log.conf
-  - metakv.log    # in-erlang-multiline-log.conf
-  - ns_couchdb.log    # in-erlang-multiline-log.conf
-  - reports.log    # in-erlang-multiline-log.conf
-  - eventing.log    # in-eventing-fts-log.conf
-  - fts.log    # in-eventing-fts-log.conf
-  - http.log    # real file, http_access.log and http_access_internal.log, in-http-log.conf
-  - indexer.log    # in-indexer-projector.conf
-  - query.log      # in-query-log.conf
-  - projector.log    # in-indexer-projector.conf
-  - analytics.log    # in-java-log.conf
-  - memcached.log    # in-memcached-log.conf
-  - prometheus.log    # in-prometheus-log.conf
-  - rebalance-report    # in-rebalance-report.conf
-  - xdcr.log    # real file is goxdcr.log, in-xdcr-log.conf
+  - analytics.log # in-analytics.conf
+  - audit.log # in-audit-log.conf
+  - babysitter.log # in-babysitter-log.conf
+  - couchdb.log # in-couchdb-log.conf
+  - debug.log # in-debug-log.conf
+  - eventing.log # in-eventing-log.conf
+  - fts.log # in-fts-log.conf
+  - http.log # real file, http_access.log and http_access_internal.log, in-http-log.conf
+  - indexer.log # in-indexer.conf
+  - json_rpc.log # in-json_rpc-log.conf
+  - mapreduce_errors.log # in-mapreduce_errors-log.conf
+  - memcached.log # in-memcached-log.conf
+  - metakv.log # in-metakv-log.conf
+  - ns_couchdb.log # in-ns_couchdb-log.conf
+  - projector.log # in-projector.conf
+  - prometheus.log # in-prometheus-log.conf
+  - query.log # in-query-log.conf
+  - rebalance-report # in-rebalance-report.conf
+  - reports.log # in-reports-log.conf
+  - xdcr.log # real file is goxdcr.log, in-xdcr-log.conf
 
 couchbase_enable_slow_query_logging: false
-couchbase_slow_query_exec_args:     # any additional args to pass to query-logger, see query-logger --help for available args
+couchbase_slow_query_exec_args: ""    # any additional args to pass to query-logger, see query-logger --help for available args
 
 # Fluent Bit tail Memory Buffer Limit, disabled by default
 # Read: https://docs.fluentbit.io/manual/administration/backpressure#mem_buf_limit
 fluent_bit_mbl_couchbase_audit: false
 fluent_bit_mbl_couchbase_erlang: false
 fluent_bit_mbl_couchbase_eventing: false
+fluent_bit_mbl_couchbase_fts: false
 fluent_bit_mbl_couchbase_http: false
-fluent_bit_mbl_couchbase_index_projector: false
+fluent_bit_mbl_couchbase_index: false
+fluent_bit_mbl_couchbase_projector: false
 fluent_bit_mbl_couchbase_query: false
 fluent_bit_mbl_couchbase_java: false
 fluent_bit_mbl_couchbase_memcached: false
@@ -77,7 +78,7 @@ fluent_bit_mbl_couchbase_xdcr: false
 # *************************************
 # stdout output (# be cautious of enabling as this could fill up system logs)
 fluent_bit_stdout_enabled: false
-fluent_bit_stdout_match: couchbase.log.*
+fluent_bit_stdout_match: none.*
 
 # cbhealthagent output
 fluent_bit_cbhealthagent_enabled: false

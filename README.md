@@ -91,13 +91,16 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `fluent_bit_mbl_couchbase_audit` | false | Memory Buffer Limit for Audit log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_erlang` | false | Memory Buffer Limit for Erlang logs parsing, disabled by default.  |
 | `fluent_bit_mbl_couchbase_eventing` | false | Memory Buffer Limit for Eventing log parsing, disabled by default. |
+| `fluent_bit_mbl_couchbase_fts` | false | Memory Buffer Limit for FTS log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_http` | false | Memory Buffer Limit for HTTP log parsing, disabled by default. |
-| `fluent_bit_mbl_couchbase_index_projector` | false | Memory Buffer Limit for Index and Projector log parsing, disabled by default. |
+| `fluent_bit_mbl_couchbase_index` | false | Memory Buffer Limit for Index log parsing, disabled by default. |
+| `fluent_bit_mbl_couchbase_projector` | false | Memory Buffer Limit for Projector log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_java` | false | Memory Buffer Limit for Analytics Java log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_memcached` | false | Memory Buffer Limit for Memcached log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_prometheus` | false | Memory Buffer Limit for Prometheus log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_rebalance` | false | Memory Buffer Limit for Rebalance log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_xdcr` | false | Memory Buffer Limit for XDCR log parsing, disabled by default. |
+| `fluent_bit_mbl_couchbase_query` | false | Memory Buffer Limit for Query log parsing, disabled by default. |
 
 ### Couchbase Variables
 
@@ -105,7 +108,6 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | -------------- | ------------- | -----------------------------------|
 | `couchbase_username` | `Administrator` | Couchbase cluster username. This is necessary to get the actual name of the cluster, as it can only be retrieved from ns_server. This is also used if `couchbase_slow_query_logging` is enabled |
 | `couchbase_password` | `password` | Couchbase cluster password. This is necessary to get the actual name of the cluster, as it can only be retrieved from ns_server.  This is also used if `couchbase_slow_query_logging` is enabled  |
-| `couchbase_install_dir` | `/opt/couchbase` | The Couchbase installation directory. |
 | `couchbase_cluster_name` | `null` | The name of the Couchbase Cluster, if not specified it will be automatically determined. |
 | `couchbase_server_version` | `null` | The version and build of Couchbase Server, if not set it will automatically be determined. |
 | `couchbase_logs_dir` | `/opt/couchbase/var/lib/couchbase/logs` | The location of the Couchbase logs directory |
@@ -134,29 +136,28 @@ The following output tags/patterns are available for matching:
 
 The following log names are available:
 
--   `analytics`
--   `analytics_debug`
--   `audit `
--   `babysitter`
--   `couchdb`
--   `debug`
--   `eventing`
--   `eventing`
--   `fts `
--   `goxdcr `
--   `http_access`
--   `http_access_internal `
--   `indexer `
--   `json_rpc `
--   `mapreduce_errors `
--   `memcached `
--   `metakv `
--   `ns_couchdb `
--   `projector `
--   `prometheus `
--   `rebalance `
--   `reports`
--   `slow_query `
+-   analytics.log
+-   audit.log
+-   babysitter.log
+-   couchdb.log
+-   debug.log
+-   eventing.log
+-   fts.log
+-   http.log
+-   indexer.log
+-   json_rpc.log
+-   mapreduce_errors.log
+-   memcached.log
+-   metakv.log
+-   ns_couchdb.log
+-   projector.log
+-   prometheus.log
+-   query.log
+-   rebalance-report
+-   reports.log
+-   slow_query.log
+-   xdcr.log
+
 
 The following log levels  are available:
 
@@ -192,17 +193,12 @@ Output Errors and Warnings, as well as slow_query and audit
 couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*,couchbase.log.slow_query,couchbase.log.audit
 ```
 
-
-| `` | Output All Logs |
-| `` |  |
-| `couchbase.log.slow_query,couchbase.log.audit` |  |
-
 #### Standard Out
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `fluent_bit_stdout_enabled` | `false` | Whether or not to enable output to stdout |
-| `fluent_bit_stdout_match` | `couchbase.log.*` | The tags to match for outputting to stdout |
+| `fluent_bit_stdout_match` | `none.*` | The tags to match for outputting to stdout.  This is useful for validating log messages, but it is advised to not output everything as this can fill up the system logs. |
 
 #### cbhealthagent output
 
@@ -217,7 +213,7 @@ couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*,couchbase.log.slow_quer
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `fluent_bit_loki_enabled` | `false` | Whether or not to enable Loki Output |
-| `fluent_bit_loki_match` | `couchbase.log.*` | The tags to match when sending to Loki |
+| `fluent_bit_loki_match` | `couchbase.log.*` | The tags to match when sending to Loki.  |
 | `fluent_bit_loki_host` | `localhost` | The Loki host address |
 | `fluent_bit_loki_port` | `3100` | The Loki host port |
 | `fluent_bit_loki_workers` | `1` | The number of worker threads to use for Loki output |
@@ -228,6 +224,13 @@ couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*,couchbase.log.slow_quer
 | `fluent_bit_loki_tls_verify` | `off` | Whether not TLS verification should be skipped |
 
 [Docs Reference](https://docs.fluentbit.io/manual/pipeline/outputs/loki)
+
+Consider the following match to ship all `WARN` and `ERROR` messages, along with all memcached.log, audit.log and slow_query.log messages.
+
+```
+couchbase.log-level.WARN.*,couchbase.log-level.ERROR.*,couchbase.log.slow_query,couchbase.audit.log
+```
+
 
 #### Splunk
 
