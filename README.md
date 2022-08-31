@@ -45,7 +45,7 @@ Deploy [Fluent Bit](https://fluentbit.io) for log parsing and shipping.  After i
 
 ## Disclaimer
 
-This ansible role and the sub-components configured are not officially supported under Couchbase Enterprise Subscriptions. Please contact Couchbase on any details for your particular environment. Contents here and sub-components are provided as is, it is maintained through community contributions.  Any issues should be reported as an [Issue](https://github.com/couchbaselabs/ansible-couchbase-cbhealthagent/issues) on Github.  Pull Requests are welcomed!
+This ansible role and the sub-components configured are not officially supported under Couchbase Enterprise Subscriptions. Please contact Couchbase on any details for your particular environment. Contents here and sub-components are provided as is, it is maintained through community contributions.  Any issues should be reported as an [Issue](https://github.com/couchbaselabs/ansible-couchbase-fluent-bit/issues) on Github.  Pull Requests are welcomed!
 
 ## Requirements
 
