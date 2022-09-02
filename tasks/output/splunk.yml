@@ -71,13 +71,13 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: present
-        line: "    http_passwd   ${SPLUNK_HTTP_PASSWD}"
+        line: "    http_passwd ${SPLUNK_HTTP_PASSWD}"
 
     - name: Remove http_passwd Comment
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: absent
-        line: "    # http_passwd   ${SPLUNK_HTTP_PASSWD}"
+        line: "    # http_passwd ${SPLUNK_HTTP_PASSWD}"
 
   when: fluent_bit_splunk_enabled and (fluent_bit_splunk_http_passwd | string | trim | length) > 0
 
@@ -87,13 +87,13 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: present
-        line: "    # http_passwd   ${SPLUNK_HTTP_PASSWD}"
+        line: "    # http_passwd ${SPLUNK_HTTP_PASSWD}"
 
     - name: Remove http_passwd
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: absent
-        line: "    http_passwd   ${SPLUNK_HTTP_PASSWD}"
+        line: "    http_passwd ${SPLUNK_HTTP_PASSWD}"
 
   when: fluent_bit_splunk_enabled and (fluent_bit_splunk_http_passwd | string | trim | length) == 0
 
@@ -103,13 +103,13 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: present
-        line: "    channel   ${SPLUNK_CHANNEL}"
+        line: "    channel     ${SPLUNK_CHANNEL}"
 
     - name: Remove channel Comment
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: absent
-        line: "    # channel   ${SPLUNK_CHANNEL}"
+        line: "    # channel     ${SPLUNK_CHANNEL}"
 
   when: fluent_bit_splunk_enabled and (fluent_bit_splunk_channel | string | trim | length) > 0
 
@@ -119,13 +119,13 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: present
-        line: "    # channel   ${SPLUNK_CHANNEL}"
+        line: "    # channel     ${SPLUNK_CHANNEL}"
 
     - name: Remove channel
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: absent
-        line: "    channel   ${SPLUNK_CHANNEL}"
+        line: "    channel     ${SPLUNK_CHANNEL}"
 
   when: fluent_bit_splunk_enabled and (fluent_bit_splunk_channel | string | trim | length) == 0
 
@@ -136,13 +136,13 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: present
-        line: "    compress   ${SPLUNK_COMPRESS}"
+        line: "    compress    ${SPLUNK_COMPRESS}"
 
     - name: Remove compress Comment
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: absent
-        line: "    # compress   ${SPLUNK_COMPRESS}"
+        line: "    # compress    ${SPLUNK_COMPRESS}"
 
   when: fluent_bit_splunk_enabled and (fluent_bit_splunk_compress | string | trim | length) > 0
 
@@ -152,12 +152,12 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: present
-        line: "    # compress   ${SPLUNK_COMPRESS}"
+        line: "    # compress    ${SPLUNK_COMPRESS}"
 
     - name: Remove compress
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
         state: absent
-        line: "    compress   ${SPLUNK_COMPRESS}"
+        line: "    compress    ${SPLUNK_COMPRESS}"
 
   when: fluent_bit_splunk_enabled and (fluent_bit_splunk_compress | string | trim | length) == 0

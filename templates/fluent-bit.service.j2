@@ -18,13 +18,9 @@ EnvironmentFile={{ fluent_bit_conf_dir }}/{{ fluent_bit_env_file}}
 
 ExecStart={{ _fluent_bit_binary_install_dir }}/fluent-bit -c {{ fluent_bit_conf_dir}}/{{ fluent_bit_conf_file}}
 
-LockPersonality=true
-NoNewPrivileges=true
-MemoryDenyWriteExecute=true
 PrivateDevices=true
 PrivateTmp=true
 ProtectHome=true
-RemoveIPC=true
 
 SyslogIdentifier=fluent-bit
 Restart=always

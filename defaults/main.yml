@@ -36,22 +36,22 @@ couchbase_logs:
   - analytics.log    # in-analytics.conf
   - audit.log    # in-audit-log.conf
   - babysitter.log    # in-babysitter-log.conf
-  - couchdb.log    # in-couchdb-log.conf
-  - debug.log    # in-debug-log.conf
+  # - couchdb.log    # in-couchdb-log.conf
+  # - debug.log    # in-debug-log.conf
   - eventing.log    # in-eventing-log.conf
   - fts.log    # in-fts-log.conf
   - http.log    # real file, http_access.log and http_access_internal.log, in-http-log.conf
   - indexer.log    # in-indexer.conf
-  - json_rpc.log    # in-json_rpc-log.conf
+  # - json_rpc.log    # in-json_rpc-log.conf
   - mapreduce_errors.log    # in-mapreduce_errors-log.conf
   - memcached.log    # in-memcached-log.conf
   - metakv.log    # in-metakv-log.conf
-  - ns_couchdb.log    # in-ns_couchdb-log.conf
+  # - ns_couchdb.log    # in-ns_couchdb-log.conf
   - projector.log    # in-projector.conf
   - prometheus.log    # in-prometheus-log.conf
   - query.log    # in-query-log.conf
-  - rebalance-report    # in-rebalance-report.conf
-  - reports.log    # in-reports-log.conf
+  # - rebalance-report    # in-rebalance-report.conf
+  # - reports.log    # in-reports-log.conf
   - xdcr.log    # real file is goxdcr.log, in-xdcr-log.conf
 
 couchbase_enable_slow_query_logging: false
@@ -105,13 +105,13 @@ fluent_bit_splunk_match: couchbase.log.*
 fluent_bit_splunk_match_regex: "none"
 fluent_bit_splunk_host: localhost
 fluent_bit_splunk_port: 8088
-fluent_bit_splunk_token: null
-fluent_bit_splunk_channel: null
-fluent_bit_splunk_http_user: null
-fluent_bit_splunk_http_passwd: null
+fluent_bit_splunk_token: ""
+fluent_bit_splunk_channel: ""
+fluent_bit_splunk_http_user: ""
+fluent_bit_splunk_http_passwd: ""
 fluent_bit_splunk_tls: "off"
 fluent_bit_splunk_tls_verify: "off"
-fluent_bit_splunk_compress: null
+fluent_bit_splunk_compress: ""
 fluent_bit_splunk_workers: 2
 
 # elasticsearch output
@@ -120,11 +120,11 @@ fluent_bit_es_enabled: false
 fluent_bit_es_match: couchbase.log.*
 fluent_bit_es_host: localhost
 fluent_bit_es_port: 9200
-fluent_bit_es_index: null
-fluent_bit_es_http_user: null
-fluent_bit_es_http_passwd: null
+fluent_bit_es_index: ""
+fluent_bit_es_http_user: ""
+fluent_bit_es_http_passwd: ""
 
 # calyptia
 fluent_bit_calyptia_enabled: false
-fluent_bit_calyptia_token: null
+fluent_bit_calyptia_token: ""
 fluent_bit_calyptia_store_path: /tmp
