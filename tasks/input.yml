@@ -42,7 +42,7 @@
 
 - name: Remove Single File Inputs that have been excluded
   ansible.builtin.file:
-    path: "{{ fluent_bit_conf_dir }}/{{ item }}"
+    path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ item | regex_replace('\\.log$', '-log') }}.conf"
     state: absent
   when: item not in couchbase_logs
   with_items:
