@@ -1,0 +1,31 @@
+---
+- name: Added Kernel Input (cbhealthagent)
+  block:
+    - name: Copy Kernel Input
+      ansible.builtin.copy:
+        src: "conf/couchbase/input/in-kmsg-kernel.conf"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-kmsg-kernel.conf"
+        owner: "{{ fluent_bit_user }}"
+        group: "{{ fluent_bit_user_group }}"
+        mode: 0664
+
+    - name: "Add Kernel to {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: present
+        line: "# @include /etc/fluent-bit/couchbase/input/in-kmsg-kernel.conf"
+        insertafter: "@include {{ fluent_bit_conf_dir }}/couchbase/input/in-tail-.*"
+
+  # add kernel if cbhealthagent is enabled
+  when: fluent_bit_cbhealthagent_enabled
+
+- name: Disable Kernel Input (cbhealthagent)
+  block:
+    - name: "Remove Kernel from {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "# @include {{ fluent_bit_conf_dir }}/couchbase/input/in-kmsg-kernel.conf"
+
+  # remove kernel if cbhealthagent is not enabled
+  when: not fluent_bit_cbhealthagent_enabled
