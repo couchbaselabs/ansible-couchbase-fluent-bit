@@ -43,9 +43,9 @@ couchbase_logs:
   - http.log    # real file, http_access.log and http_access_internal.log, in-http-log.conf
   - indexer.log    # in-indexer.conf
   # - json_rpc.log    # in-json_rpc-log.conf
-  - mapreduce_errors.log    # in-mapreduce_errors-log.conf
+  # - mapreduce_errors.log    # in-mapreduce_errors-log.conf
   - memcached.log    # in-memcached-log.conf
-  - metakv.log    # in-metakv-log.conf
+  # - metakv.log    # in-metakv-log.conf
   # - ns_couchdb.log    # in-ns_couchdb-log.conf
   - projector.log    # in-projector.conf
   - prometheus.log    # in-prometheus-log.conf
