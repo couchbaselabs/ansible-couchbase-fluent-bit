@@ -54,6 +54,7 @@ ES_HTTP_PASSWD={{ fluent_bit_es_http_passwd }}
 {% if fluent_bit_splunk_enabled %}
 # Splunk Env Vars
 SPLUNK_MATCH={{ fluent_bit_splunk_match | default('couchbase.log.*') }}
+SPLUNK_MATCH_REGEX={{ fluent_bit_splunk_match_regex | default('') }}
 SPLUNK_HOST={{ fluent_bit_splunk_host | default('localhost') }}
 SPLUNK_PORT={{ fluent_bit_splunk_port | default('8088') }}
 SPLUNK_TOKEN={{ fluent_bit_splunk_token }}

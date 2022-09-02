@@ -102,6 +102,7 @@ fluent_bit_loki_tls_verify: "off"
 # reference: https://docs.fluentbit.io/manual/pipeline/outputs/splunk#configuration-parameters
 fluent_bit_splunk_enabled: false
 fluent_bit_splunk_match: couchbase.log.*
+fluent_bit_splunk_match_regex: ""
 fluent_bit_splunk_host: localhost
 fluent_bit_splunk_port: 8088
 fluent_bit_splunk_token: null

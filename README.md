@@ -220,8 +220,8 @@ couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*,couchbase.log.slow_quer
 | `fluent_bit_loki_http_user` | `null` | Set HTTP basic authentication user name if authentication is enabled |
 | `fluent_bit_loki_http_passwd` | `null` | Set HTTP basic authentication password if authentication is enabled |
 | `fluent_bit_loki_tenant_id` | `null` | Tenant ID used by default to push logs to Loki. If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent. |
-| `fluent_bit_loki_tls` | `off` | Whether or not to use TLS |
-| `fluent_bit_loki_tls_verify` | `off` | Whether not TLS verification should be skipped |
+| `fluent_bit_loki_tls` | `"off"` | Whether or not to use TLS |
+| `fluent_bit_loki_tls_verify` | `"off"` | Whether not TLS verification should be skipped |
 
 [Docs Reference](https://docs.fluentbit.io/manual/pipeline/outputs/loki)
 
@@ -238,6 +238,7 @@ couchbase.log-level.WARN.*,couchbase.log-level.ERROR.*,couchbase.log.slow_query,
 | -------------- | ------------- | -----------------------------------|
 | `fluent_bit_splunk_enabled` | `false` | Whether or not to enable Splunk Output |
 | `fluent_bit_splunk_match` | `couchbase.log.*` | The tags to match when sending to Splunk |
+| `fluent_bit_splunk_match_regex` | ` ` | The tags to match when sending to Splunk |
 | `fluent_bit_splunk_host` | `localhost` | The Splunk host address |
 | `fluent_bit_splunk_port` | `8088` | The Splunk host port |
 | `fluent_bit_splunk_token` | `null` | The Splunk Token  |
@@ -245,8 +246,8 @@ couchbase.log-level.WARN.*,couchbase.log-level.ERROR.*,couchbase.log.slow_query,
 | `fluent_bit_splunk_workers` | `2` | The number of worker threads to use for Splunk output |
 | `fluent_bit_splunk_http_user` | `null` | Set HTTP basic authentication user name if authentication is enabled |
 | `fluent_bit_splunk_http_passwd` | `null` | Set HTTP basic authentication password if authentication is enabled |
-| `fluent_bit_splunk_tls` | `off` | Whether or not to use TLS |
-| `fluent_bit_splunk_tls_verify` | `off` | Whether not TLS verification should be skipped |
+| `fluent_bit_splunk_tls` | `"off"` | Whether or not to use TLS |
+| `fluent_bit_splunk_tls_verify` | `"off"` | Whether not TLS verification should be skipped |
 | `fluent_bit_splunk_compress` | `null` | Whether or not to perform compression, the only valid value is `"gzip"` |
 
 [Docs Reference](https://docs.fluentbit.io/manual/pipeline/outputs/splunk#configuration-parameters)
