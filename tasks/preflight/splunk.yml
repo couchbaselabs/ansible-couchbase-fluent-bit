@@ -19,13 +19,15 @@
     - fluent_bit_splunk_port
     - fluent_bit_splunk_workers
 
-- name: Fail when Splunk variables do not have a length
+- name: Fail when Splunk Host property does not have a length
   ansible.builtin.fail:
-    msg: "The {{ item }} property must be valued"
-  when: ( vars[item] | string | length == 0 )
-  with_items:
-    - fluent_bit_splunk_match
-    - fluent_bit_splunk_host
+    msg: "The fluent_bit_splunk_host property must be valued"
+  when: ( fluent_bit_splunk_host | string | length == 0 )
+
+- name: Fail when Splunk Match and Match_Regex properties are not set
+  ansible.builtin.fail:
+    msg: "The fluent_bit_splunk_match or fluent_bit_splunk_match_regex property must be valued"
+  when: ( fluent_bit_splunk_match | string | length == 0 ) and ( fluent_bit_splunk_match_regex| string | length == 0 )
 
 - name: Fail when the tls is not "on" or "off" has a type property has been set but is invalid
   ansible.builtin.fail:

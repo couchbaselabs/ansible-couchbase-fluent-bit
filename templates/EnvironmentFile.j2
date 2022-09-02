@@ -20,17 +20,20 @@ CB_USERNAME="{{ couchbase_username }}"
 CB_PASSWORD="{{ couchbase_password }}"
 {% endif %}
 
-# Output
-STDOUT_MATCH={{ fluent_bit_stdout_match | default('couchbase.log.*') }}
+{% if fluent_bit_stdout_enabled %}
+# stdout Env Vars
+STDOUT_MATCH="{{ fluent_bit_stdout_match | default('couchbase.log.*') }}"
+{% endif %}
 
 {% if fluent_bit_cbhealthagent_enabled %}
-CBHEALTHAGENT_MATCH={{ fluent_bit_cbhealthagent_match | default('couchbase.kernel,couchbase.log.*') }}
+# cbhealthagent Env Vars
+CBHEALTHAGENT_MATCH="{{ fluent_bit_cbhealthagent_match | default('couchbase.kernel,couchbase.log.*') }}"
 CBHEALTHAGENT_PORT={{ fluent_bit_cbhealthagent_log_port | default('9092') }}
 {% endif %}
 
 {% if fluent_bit_loki_enabled %}
 # Loki Env Vars
-LOKI_MATCH={{ fluent_bit_loki_match | default('couchbase.log.*') }}
+LOKI_MATCH="{{ fluent_bit_loki_match | default('couchbase.log.*') }}"
 LOKI_HOST={{ fluent_bit_loki_host }}
 LOKI_PORT={{ fluent_bit_loki_port | default('3100') }}
 LOKI_TENANT_ID={{ fluent_bit_loki_tenant_id }}
@@ -43,7 +46,7 @@ LOKI_WORKERS={{ fluent_bit_loki_workers | default('1') }}
 
 {% if fluent_bit_es_enabled %}
 # Elastichsearch Env Vars
-ES_MATCH={{ fluent_bit_es_match | default('couchbase.log.*') }}
+ES_MATCH="{{ fluent_bit_es_match | default('couchbase.log.*') }}"
 ES_HOST={{ fluent_bit_es_host }}
 ES_PORT={{ fluent_bit_es_port }}
 ES_INDEX={{ fluent_bit_es_index }}
@@ -54,7 +57,7 @@ ES_HTTP_PASSWD={{ fluent_bit_es_http_passwd }}
 {% if fluent_bit_splunk_enabled %}
 # Splunk Env Vars
 SPLUNK_MATCH={{ fluent_bit_splunk_match | default('couchbase.log.*') }}
-SPLUNK_MATCH_REGEX={{ fluent_bit_splunk_match_regex | default('') }}
+SPLUNK_MATCH_REGEX="{{ fluent_bit_splunk_match_regex | default('') }}"
 SPLUNK_HOST={{ fluent_bit_splunk_host | default('localhost') }}
 SPLUNK_PORT={{ fluent_bit_splunk_port | default('8088') }}
 SPLUNK_TOKEN={{ fluent_bit_splunk_token }}
