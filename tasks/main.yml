@@ -31,7 +31,7 @@
   tags:
     - fluent_bit_configure
 
-- name: Ensure Fluent Bit is enabled on boot
+- name: Ensure Fluent Bit is Started and Enabled on Boot
   become: true
   ansible.builtin.systemd:
     daemon_reload: true

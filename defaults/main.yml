@@ -45,7 +45,7 @@ couchbase_logs:
   # - metakv.log    # in-metakv-log.conf
   # - ns_couchdb.log    # in-ns_couchdb-log.conf
   - projector.log    # in-projector.conf
-  - prometheus.log    # in-prometheus-log.conf
+  # - prometheus.log    # in-prometheus-log.conf
   - query.log    # in-query-log.conf
   # - rebalance-report    # in-rebalance-report.conf
   # - reports.log    # in-reports-log.conf
