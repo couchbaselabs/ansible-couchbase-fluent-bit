@@ -18,7 +18,6 @@ fluent_bit_log_level: info
 # manually downloaded the binary
 fluent_bit_local_binary_path: ""
 
-
 # Fluent Bit Couchbase Variables
 couchbase_username: Administrator
 couchbase_password: password
@@ -28,8 +27,6 @@ couchbase_logs_dir: /opt/couchbase/var/lib/couchbase/logs
 couchbase_audit_logs_dir: /opt/couchbase/var/lib/couchbase/logs
 couchbase_logs_rebalance_tmp_dir: /opt/couchbase/var/lib/couchbase/logs/rebalance
 fluent_bit_couchbase_user_group: couchbase
-# what version of the fluent-bit config from https://github.com/couchbase/couchbase-fluent-bit is used
-couchbase_fluent_bit_version: 1.2.1
 
 # Which log files to monitor
 couchbase_logs:
