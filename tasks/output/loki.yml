@@ -3,7 +3,7 @@
   ansible.builtin.lineinfile:
     path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
     state: present
-    line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
+    line: "@include couchbase/output/out-loki.conf"
   when: fluent_bit_loki_enabled
 
 - name: Include Loki Output conf
@@ -19,7 +19,7 @@
   ansible.builtin.lineinfile:
     path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
     state: absent
-    line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-loki.conf"
+    line: "@include couchbase/output/out-loki.conf"
   when: not fluent_bit_loki_enabled
 
 - name: Add Loki tenant_id

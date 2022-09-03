@@ -5,7 +5,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
+        line: "@include couchbase/output/out-splunk.conf"
 
     - name: Copy Splunk Output conf file
       ansible.builtin.copy:
@@ -23,7 +23,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-splunk.conf"
+        line: "@include couchbase/output/out-splunk.conf"
 
     - name: Remove Splunk Output conf file
       ansible.builtin.file:

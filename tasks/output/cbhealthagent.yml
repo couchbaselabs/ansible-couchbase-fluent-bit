@@ -5,7 +5,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+        line: "@include couchbase/output/out-cbhealthagent.conf"
 
     - name: Copy cbhealthagent Output conf file
       ansible.builtin.copy:
@@ -23,7 +23,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-cbhealthagent.conf"
+        line: "@include couchbase/output/out-cbhealthagent.conf"
 
     - name: Remove cbhealthagent Output conf file
       ansible.builtin.file:

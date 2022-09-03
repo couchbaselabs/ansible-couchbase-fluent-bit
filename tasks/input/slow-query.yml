@@ -25,15 +25,21 @@
     - name: Add Additional Slow Query Exec Args to File
       ansible.builtin.replace:
         path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow-query.conf"
-        regexp: "/etc/fluent-bit[^\n]+"
-        replace: "{{ fluent_bit_conf_dir }}/couchbase/scripts/query-logger {{ couchbase_slow_query_exec_args | default('') }}"
+        regexp: "couchbase/scripts/query-logger[^\n]*"
+        replace: "couchbase/scripts/query-logger {{ couchbase_slow_query_exec_args | default('') }}"
 
     - name: "Add Slow Query to {{ fluent_bit_conf_file }}"
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow-query.conf"
-        insertafter: "@include /etc/fluent-bit/couchbase/input/in-tail-.*"
+        line: "@include couchbase/input/in-exec-slow-query.conf"
+        insertafter: "@include couchbase/input/in-tail-.*"
+
+    - name: "Remove Slow Query Comment from {{ fluent_bit_conf_file }}"
+      ansible.builtin.lineinfile:
+        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+        state: absent
+        line: "# @include couchbase/input/in-exec-slow-query.conf"
 
   # only include when slow query logging is enabled and the node is a query node
   when: couchbase_enable_slow_query_logging and "n1ql" in couchbase_services
@@ -44,7 +50,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow-query.conf"
+        line: "@include couchbase/input/in-exec-slow-query.conf"
 
     - name: Remove Slow Query Files
       ansible.builtin.file:

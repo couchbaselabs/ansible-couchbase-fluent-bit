@@ -5,7 +5,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+        line: "@include couchbase/output/out-stdout.conf"
       when: fluent_bit_cbhealthagent_enabled
 
     - name: Copy stdout Output conf file
@@ -24,7 +24,7 @@
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: absent
-        line: "@include {{ fluent_bit_conf_dir }}/couchbase/output/out-stdout.conf"
+        line: "@include couchbase/output/out-stdout.conf"
 
     - name: Remove Standard Out conf file
       ansible.builtin.file:

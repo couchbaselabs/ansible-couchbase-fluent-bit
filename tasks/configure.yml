@@ -135,16 +135,6 @@
       tags:
         - fluent_bit_configure
 
-- name: "Replace all instances of /etc/fluent-bit with {{ fluent_bit_conf_dir }}"
-  ansible.builtin.replace:
-    path: "{{ item }}"
-    regexp: "/etc/fluent-bit"
-    replace: "{{ fluent_bit_conf_dir }}"
-  when: fluent_bit_conf_dir != '/etc/fluent-bit'
-  with_items:
-    - "{{ fluent_bit_conf_dir }}/fluent-bit.conf"
-    - "{{ fluent_bit_conf_dir }}/couchbase/service.conf"
-
 # These files may exist from previous releases of the role, remove them if they do as they aren't used or
 # have been moved.
 - name: Cleanup old files from previous releases
@@ -182,8 +172,8 @@
 # - name: Uncomment filter-common-problems
 #   replace:
 #     path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file}}"
-#     regexp: "# @include {{ fluent_bit_conf_dir }}/couchbase/filter-common-problems.conf"
-#     replace: "@include {{ fluent_bit_conf_dir }}/couchbase/filter-common-problems.conf"
+#     regexp: "# couchbase/filter-common-problems.conf"
+#     replace: "couchbase/filter-common-problems.conf"
 #   tags:
 #     - fluent_bit_configure
 #     - fluent_bit_include_common_problems
