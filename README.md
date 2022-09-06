@@ -139,6 +139,7 @@ The following log files are available:
 -   `reports.log`
 -   `xdcr.log`
 
+
 ### Couchbase Slow Query Logging Variables
 
 Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent Bit Exec Plugin](https://docs.fluentbit.io/manual/pipeline/inputs/exec) is used to execute the `query-logger` script at a 1min interval, which will retrieve any new slow queries from `system:completed_requests` on the local node.
