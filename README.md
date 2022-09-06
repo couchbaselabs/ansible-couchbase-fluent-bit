@@ -120,6 +120,7 @@ The following log files are available:
 
 -   `analytics.log`
 -   `analytics_dcpdebug.log`
+-   `analytics_dcp_failed_ingestion.log`
 -   `audit.log`
 -   `babysitter.log`
 -   `couchdb.log`
