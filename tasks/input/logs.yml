@@ -34,6 +34,9 @@
   when: item in couchbase_logs and "cbas" in couchbase_services
   with_items:
     - analytics.log
+    - analytics_access.log
+    - analytics_dcpdebug.log
+    - analytics_dcp_failed_ingestion.log
 
 - name: Copy Data Service Inputs File Inputs
   ansible.builtin.copy:
