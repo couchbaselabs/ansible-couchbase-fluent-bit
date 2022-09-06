@@ -74,6 +74,7 @@
     - fluent_bit_splunk_enabled
     - fluent_bit_es_enabled
     - fluent_bit_calyptia_enabled
+    - couchbase_slow_query_logging_enabled
 
 # cbhealthagent preflight checks
 - include_tasks:

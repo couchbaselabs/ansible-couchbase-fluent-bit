@@ -13,11 +13,12 @@
     apply:
       become: true
 
-# Configure Slow Query Input
+# Configure Slow Query Input (Exec/Log)
 - include_tasks:
     file: input/slow-query.yml
     apply:
       become: true
+  when: '"n1ql" in couchbase_services'
 
 # Configure Kernel Input
 - include_tasks:

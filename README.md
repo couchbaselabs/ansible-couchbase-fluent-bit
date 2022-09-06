@@ -114,7 +114,30 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `couchbase_audit_logs_dir` | `/opt/couchbase/var/lib/couchbase/logs` | The location of the Couchbase Audit logs directory |
 | `couchbase_logs_rebalance_tmp_dir` | `/opt/couchbase/var/lib/couchbase/logs/rebalance` | The location of the Couchbase rebalance directory |
 | `fluent_bit_couchbase_user_group` | `couchbase` | The user group that couchbase is running in to grant access to the Fluent Bit user to read the logs |
-| `couchbase_logs` | <ul><li>audit.log</li><li>babysitter.log</li><li>couchdb.log</li><li>debug.log</li><li>json\_rpc.log</li><li>mapreduce\_errors.log</li><li>metakv.log</li><li>ns\_couchdb.log</li><li>reports.log</li><li>eventing.log</li><li>fts.log</li><li>http.log</li><li>indexer.log</li><li>projector.log</li><li>analytics.log</li><li>memcached.log</li><li>prometheus.log</li><li>rebalance-report</li><li>xdcr.log</li></ul> | List of log files to monitor and process, the default is all |
+| `couchbase_logs` | <ul><li>analytics.log</li><li>audit.log</li><li>babysitter.log</li><li>eventing.log</li><li>fts.log</li><li>http.log</li><li>indexer.log</li><li>memcached.log</li><li>projector.log</li><li>query.log</li><li>xdcr.log</li></ul> | List of log files to monitor and process |
+
+The following log files are available:
+
+-   `analytics.log`
+-   `audit.log`
+-   `babysitter.log`
+-   `couchdb.log`
+-   `debug.log`
+-   `eventing.log`
+-   `fts.log`
+-   `http.log`
+-   `indexer.log`
+-   `json_rpc.log`
+-   `mapreduce_errors.log`
+-   `memcached.log`
+-   `metakv.log`
+-   `ns_couchdb.log`
+-   `projector.log`
+-   `prometheus.log`
+-   `query.log`
+-   `rebalance-report`
+-   `reports.log`
+-   `xdcr.log`
 
 ### Couchbase Slow Query Logging Variables
 
@@ -122,8 +145,13 @@ Fluent Bit 1.9.3+ must be used when slow query logging is enabled.  The [Fluent 
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
-| `couchbase_enable_slow_query_logging` | false | Whether or not to enable slow query logging |
-| `couchbase_slow_query_exec_args` |  | Any additional arguments to pass to the `query-logger`, run `/etc/fluent-bit/couchbase/scripts/query-logger --help` for all available options|
+| `couchbase_slow_query_logging_enabled` | `false` | Whether or not to enable slow query logging |
+| `couchbase_slow_query_exec_args` | ` ` | Any additional arguments to pass to the `query-logger`, run `/etc/fluent-bit/couchbase/scripts/query-logger --help` for all available options|
+| `couchbase_slow_query_mode` | `exec` | Whether to use Fluent Bit Exec input or Tail a Log File.  Values are `"exec"` or `"tail"` |
+| `couchbase_slow_query_log_path` | `{{ couchbase_logs_dir }}` | The path where to store the slow query logs |
+| `couchbase_slow_query_cron_user` | `root` | If the slow query mode is "tail" the user to schedule the crontab to run as. |
+| `couchbase_slow_query_logrotate_path` | `/etc/logrotate.d` | The path where to create the logrotate entry.  If this is not `/etc/logrotate.d` then it is recommended that you create your own `crontab` entry to call log rotate with the path to your config. |
+| `couchbase_slow_query_logrotate_config` | [see `./defaults/main.yml`](./defaults/main.yml) | The contents of the `logrotate` file |
 
 ## Output Variables
 

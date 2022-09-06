@@ -1,10 +1,35 @@
 ---
-- name: Enable Slow Query Logging
+- name: Enable Slow Query
   block:
-    - name: Install jq if query logging is enabled
-      ansible.builtin.package:
-        name: jq
-        state: present
+    - name: Remove "tail" when mode is "exec"
+      block:
+        - name: Remove Slow Query Tail Input Conf
+          ansible.builtin.file:
+            path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-tail-slow_query.conf"
+            state: absent
+
+        - name: "Remove Slow Query Tail from {{ fluent_bit_conf_file }}"
+          ansible.builtin.lineinfile:
+            path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+            state: absent
+            line: "@include couchbase/input/in-tail-slow_query.conf"
+
+      when: couchbase_slow_query_mode == "exec"
+
+    - name: Remove "exec" when mode is "tail"
+      block:
+        - name: Remove Slow Query Exec Input Conf
+          ansible.builtin.file:
+            path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow_query.conf"
+            state: absent
+
+        - name: "Remove Slow Query Exec from {{ fluent_bit_conf_file }}"
+          ansible.builtin.lineinfile:
+            path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
+            state: absent
+            line: "@include couchbase/input/in-exec-slow_query.conf"
+
+      when: couchbase_slow_query_mode == "tail"
 
     - name: Copy query-logger script
       ansible.builtin.copy:
@@ -14,51 +39,84 @@
         group: "{{ fluent_bit_user_group }}"
         mode: 0775
 
-    - name: Copy Slow Query Exec Input
+    - name: "Copy Slow Query {{ couchbase_slow_query_mode }} Input"
       ansible.builtin.copy:
-        src: "conf/couchbase/input/in-exec-slow-query.conf"
-        dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow-query.conf"
+        src: "conf/couchbase/input/in-{{ couchbase_slow_query_mode }}-slow_query.conf"
+        dest: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ couchbase_slow_query_mode }}-slow_query.conf"
         owner: "{{ fluent_bit_user }}"
         group: "{{ fluent_bit_user_group }}"
         mode: 0664
 
-    - name: Add Additional Slow Query Exec Args to File
+    - name: "Add Additional Slow Query {{ couchbase_slow_query_mode }} Args to File"
       ansible.builtin.replace:
-        path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow-query.conf"
+        path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-{{ couchbase_slow_query_mode }}-slow_query.conf"
         regexp: "couchbase/scripts/query-logger[^\n]*"
-        replace: "couchbase/scripts/query-logger {{ couchbase_slow_query_exec_args | default('') }}"
+        replace: "couchbase/scripts/query-logger --username \"$CB_USERNAME\" --password \"$CB_PASSWORD\" {{ couchbase_slow_query_exec_args | default('') }}"
 
     - name: "Add Slow Query to {{ fluent_bit_conf_file }}"
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: present
-        line: "@include couchbase/input/in-exec-slow-query.conf"
+        line: "@include couchbase/input/in-{{ couchbase_slow_query_mode }}-slow_query.conf"
         insertafter: "@include couchbase/input/in-tail-.*"
 
-    - name: "Remove Slow Query Comment from {{ fluent_bit_conf_file }}"
-      ansible.builtin.lineinfile:
-        path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-        state: absent
-        line: "# @include couchbase/input/in-exec-slow-query.conf"
+    - name: Schedule Query Logger and Create Logrotate Entry
+      block:
+        - name: Schedule query-logger crontab, creates /etc/cron.d/query-logger file
+          ansible.builtin.cron:
+            name: query-logger
+            cron_file: query-logger
+            minute: "*"
+            state: present
+            user: "{{ couchbase_slow_query_cron_user }}"
+            job: >
+              "{{ fluent_bit_conf_dir }}/couchbase/scripts/query-logger" --username "{{ couchbase_username }}" --password "{{ couchbase_password }}" >> {{ couchbase_slow_query_log_path }}/slow_query.log
+
+        - name: "Create {{ couchbase_slow_query_logrotate_path }}/slow_query file"
+          ansible.builtin.copy:
+            dest: "{{ couchbase_slow_query_logrotate_path }}/slow_query"
+            content: |
+              {{ couchbase_slow_query_log_path }}/slow_query.log {
+                daily
+                missingok
+                notifempty
+                rotate 14
+                minsize 1M
+                size 20M
+                compress
+              }
+
+      when: couchbase_slow_query_mode == "tail"
 
   # only include when slow query logging is enabled and the node is a query node
-  when: couchbase_enable_slow_query_logging and "n1ql" in couchbase_services
+  when: couchbase_slow_query_logging_enabled
 
-- name: Disable Slow Query Logging
+- name: Disable Slow Query
   block:
     - name: "Remove Slow Query from {{ fluent_bit_conf_file }}"
       ansible.builtin.lineinfile:
         path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
         state: absent
-        line: "@include couchbase/input/in-exec-slow-query.conf"
+        line: "@include couchbase/input/in-{{ item }}-slow_query.conf"
+      with_items:
+        - exec
+        - tail
 
     - name: Remove Slow Query Files
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       with_items:
-        - "{{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow-query.conf"
+        - "{{ fluent_bit_conf_dir }}/couchbase/input/in-exec-slow_query.conf"
+        - "{{ fluent_bit_conf_dir }}/couchbase/input/in-tail-slow_query.conf"
         - "{{ fluent_bit_conf_dir }}/couchbase/scripts/query-logger"
+        - "{{ couchbase_slow_query_logrotate_path }}/slow_query"
+
+    - name: Remove query-logger crontab
+      ansible.builtin.cron:
+        name: query-logger
+        cron_file: query-logger
+        state: absent
 
   # remove slow query logging when disabled and the node is a query node
-  when: not couchbase_enable_slow_query_logging and "n1ql" in couchbase_services
+  when: not couchbase_slow_query_logging_enabled

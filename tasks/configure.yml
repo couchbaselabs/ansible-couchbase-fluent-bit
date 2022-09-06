@@ -167,6 +167,7 @@
     - couchbase/input/in-rebalance-report.conf
     - couchbase/input/in-reports-log.conf
     - couchbase/input/in-xdcr-log.conf
+    - couchbase/input/in-exec-slow-query.conf
   ignore_errors: true    # noqa ignore-errors
 
 # - name: Uncomment filter-common-problems

@@ -13,10 +13,11 @@ COUCHBASE_LOGS_REBALANCE_TMP_DIR={{ couchbase_logs_rebalance_tmp_dir | default('
 COUCHBASE_NODE={{ couchbase_node | default(inventory_hostname) }}
 COUCHBASE_SERVICES={{ couchbase_services }}
 
-{% if couchbase_enable_slow_query_logging %}
+{% if couchbase_slow_query_logging_enabled %}
 # Couchbase Slow Query Env Vars
 CB_USERNAME="{{ couchbase_username }}"
 CB_PASSWORD="{{ couchbase_password }}"
+COUCHBASE_SLOW_QUERY_LOGS={{ couchbase_slow_query_log_path }}
 {% endif %}
 
 {% if fluent_bit_stdout_enabled %}
