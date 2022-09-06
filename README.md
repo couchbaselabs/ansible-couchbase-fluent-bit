@@ -119,6 +119,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 The following log files are available:
 
 -   `analytics.log`
+-   `analytics_access.log`
 -   `analytics_dcpdebug.log`
 -   `analytics_dcp_failed_ingestion.log`
 -   `audit.log`

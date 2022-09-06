@@ -31,6 +31,7 @@ fluent_bit_couchbase_user_group: couchbase
 # Which log files to monitor
 couchbase_logs:
   - analytics.log    #  real file, analytics_info.log, in-tail-analytics-log.conf
+  # - analytics_access.log    # in-tail-analytics_access-log.conf
   # - analytics_dcpdebug.log    # in-tail-analytics_dcpdebug-log.conf
   # - analytics_dcp_failed_ingestion.log    # in-tail-analytics_dcp_failed_ingestion-log.conf
   - audit.log    # in-tail-audit-log.conf
