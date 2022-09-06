@@ -30,26 +30,27 @@ fluent_bit_couchbase_user_group: couchbase
 
 # Which log files to monitor
 couchbase_logs:
-  - analytics.log    # in-analytics.conf
-  - audit.log    # in-audit-log.conf
-  - babysitter.log    # in-babysitter-log.conf
-  # - couchdb.log    # in-couchdb-log.conf
-  # - debug.log    # in-debug-log.conf
-  - eventing.log    # in-eventing-log.conf
-  - fts.log    # in-fts-log.conf
-  - http.log    # real file, http_access.log and http_access_internal.log, in-http-log.conf
-  - indexer.log    # in-indexer.conf
-  # - json_rpc.log    # in-json_rpc-log.conf
-  # - mapreduce_errors.log    # in-mapreduce_errors-log.conf
-  - memcached.log    # in-memcached-log.conf
-  # - metakv.log    # in-metakv-log.conf
-  # - ns_couchdb.log    # in-ns_couchdb-log.conf
-  - projector.log    # in-projector.conf
-  # - prometheus.log    # in-prometheus-log.conf
-  - query.log    # in-query-log.conf
-  # - rebalance-report    # in-rebalance-report.conf
-  # - reports.log    # in-reports-log.conf
-  - xdcr.log    # real file is goxdcr.log, in-xdcr-log.conf
+  - analytics.log    #  real file, analytics_info.log, in-tail-analytics-log.conf
+  # - analytics_dcpdebug.log    # in-tail-analytics_dcpdebug-log.conf
+  - audit.log    # in-tail-audit-log.conf
+  - babysitter.log    # in-tail-babysitter-log.conf
+  # - couchdb.log    # in-tail-couchdb-log.conf
+  # - debug.log    # in-tail-debug-log.conf
+  - eventing.log    # in-tail-eventing-log.conf
+  - fts.log    # in-tail-fts-log.conf
+  - http.log    # real file, http_access.log and http_access_internal.log, in-tail-http-log.conf
+  - indexer.log    # in-tail-indexer.conf
+  # - json_rpc.log    # in-tail-json_rpc-log.conf
+  # - mapreduce_errors.log    # in-tail-mapreduce_errors-log.conf
+  - memcached.log    # in-tail-memcached-log.conf
+  # - metakv.log    # in-tail-metakv-log.conf
+  # - ns_couchdb.log    # in-tail-ns_couchdb-log.conf
+  - projector.log    # in-tail-projector.conf
+  # - prometheus.log    # in-tail-prometheus-log.conf
+  - query.log    # in-tail-query-log.conf
+  # - rebalance-report    # in-tail-rebalance-report.conf
+  # - reports.log    # in-tail-reports-log.conf
+  - xdcr.log    # real file is goxdcr.log, in-tail-xdcr-log.conf
 
 couchbase_slow_query_logging_enabled: false
 couchbase_slow_query_exec_args: ""    # any additional args to pass to query-logger, see query-logger --help for available args
