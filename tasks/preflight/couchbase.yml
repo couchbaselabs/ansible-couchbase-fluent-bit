@@ -28,6 +28,9 @@
   ansible.builtin.set_fact:
     __valid_couchbase_logs:
       - analytics.log
+      - analytics_access.log
+      - analytics_dcpdebug.log
+      - analytics_dcp_failed_ingestion.log
       - audit.log
       - babysitter.log
       - couchdb.log
