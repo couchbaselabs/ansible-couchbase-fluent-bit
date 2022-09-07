@@ -121,10 +121,6 @@
 
   when: couchbase_slow_query_logging_enabled
 
-- name: Test
-  debug:
-    var: couchbase_slow_query_mode
-
 - name: Fail when an invalid slow query mode was specified
   ansible.builtin.fail:
     msg: "The couchbase_slow_query_mode can only be \"exec\" or \"tail\""
