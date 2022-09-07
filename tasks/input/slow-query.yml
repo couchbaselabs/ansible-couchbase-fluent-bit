@@ -1,6 +1,18 @@
 ---
 - name: Enable Slow Query
   block:
+    - name: Ensure jq is installed
+      ansible.builtin.package:
+        name: jq
+        state: present
+
+    - name: Ensure logrotate is installed if mode is "tail"
+      ansible.builtin.package:
+        name: logrotate
+        state: present
+
+      when: couchbase_slow_query_mode == "tail"
+
     - name: Remove "tail" when mode is "exec"
       block:
         - name: Remove Slow Query Tail Input Conf

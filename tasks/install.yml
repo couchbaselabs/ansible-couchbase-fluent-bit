@@ -7,12 +7,6 @@
     - postgresql-libs
     - lua
 
-- name: Install jq if query logging is enabled
-  ansible.builtin.package:
-    name: jq
-    state: present
-  when: couchbase_slow_query_logging_enabled
-
 - name: Fluent Bit Group Creation
   block:
     - name: Check if the "{{ fluent_bit_user_group }}" group exists
