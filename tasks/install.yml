@@ -80,7 +80,7 @@
 
 - name: Propagate local fluent-bit binary
   ansible.builtin.copy:
-    src: "{{ fluent_bit_local_binary_path }}"
+    src: "{{ fluent_bit_local_binary_path }}/fluent-bit"
     dest: "{{ _fluent_bit_binary_install_dir }}/fluent-bit"
     mode: 0775
     owner: "{{ fluent_bit_user }}"
