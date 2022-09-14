@@ -17,7 +17,6 @@
     - debug.log
     - http.log
     - json_rpc.log
-    - mapreduce_errors.log
     - metakv.log
     - ns_couchdb.log
     - prometheus.log
