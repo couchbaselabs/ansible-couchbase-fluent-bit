@@ -119,7 +119,7 @@
   block:
     - name: Check if fluent_bit_local_binary_path exists
       ansible.builtin.stat:
-        path: "{{ _fluent_bit_binary_install_dir }}/fluent-bit"
+        path: "{{ fluent_bit_local_binary_path }}/fluent-bit"
       register: __fluent_bit_local_binary_check
       become: false
       delegate_to: localhost
