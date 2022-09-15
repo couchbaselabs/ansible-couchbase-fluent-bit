@@ -88,6 +88,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `fluent_bit_user_shell` | `/usr/sbin/nologin` | By default `/usr/sbin/nologin` is used to prevent the user from logging in, if you're using an existing user account this should be `/bin/bash`   |
 | `fluent_bit_user_createhome` | `false` | Whether or not to create the home directory for the user  |
 | `fluent_bit_log_level` | `info` | The Fluent Bit agent log level.  Allowed values are: off, error, warn, info, and debug. Values are accumulative, e.g: if 'debug' is set, it will include error, warning, info and debug. |
+| `fluent_bit_local_binary_path` | ` ` | Full path to the local binary if already downloaded or built on the controller this should only be set, if ansible is not downloading the binary and you have manually downloaded the binary |
 | `fluent_bit_mbl_couchbase_audit` | false | Memory Buffer Limit for Audit log parsing, disabled by default. |
 | `fluent_bit_mbl_couchbase_erlang` | false | Memory Buffer Limit for Erlang logs parsing, disabled by default.  |
 | `fluent_bit_mbl_couchbase_eventing` | false | Memory Buffer Limit for Eventing log parsing, disabled by default. |
