@@ -166,6 +166,7 @@ The following output tags/patterns are available for matching:
 -   `couchbase.log-level.<log-level>.<log-name>`
 -   `couchbase.audit.messages`
 -   `couchbase.audit.bucket.<name-of-bucket>`
+-   `couchbase.problems`
 
 The following log names are available:
 
@@ -238,7 +239,7 @@ couchbase.log-levels.WARN.*,couchbase.log-levels.ERROR.*,couchbase.log.slow_quer
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `fluent_bit_cbhealthagent_enabled` | `false` | Whether or not to output log messages to `cbhealthagent` running on the local node |
-| `fluent_bit_cbhealthagent_match` | `couchbase.kernel,couchbase.log.*` | The tags to match for outputting to `cbhealthagent` |
+| `fluent_bit_cbhealthagent_match` | `couchbase.problems` | The tags to match for outputting to `cbhealthagent` |
 | `fluent_bit_cbhealthagent_log_port` | `9084` | The TCP port that `cbhealthagent` is listening on |
 
 #### Loki

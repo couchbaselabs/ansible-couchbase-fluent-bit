@@ -96,7 +96,7 @@ fluent_bit_stdout_match: none.*
 
 # cbhealthagent output
 fluent_bit_cbhealthagent_enabled: false
-fluent_bit_cbhealthagent_match: couchbase.kernel,couchbase.log.*
+fluent_bit_cbhealthagent_match: couchbase.problems
 fluent_bit_cbhealthagent_log_port: 9084
 
 # loki output
