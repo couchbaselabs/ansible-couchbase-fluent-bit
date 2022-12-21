@@ -20,12 +20,6 @@
             path: "{{ fluent_bit_conf_dir }}/couchbase/input/in-tail-slow_query.conf"
             state: absent
 
-        - name: "Remove Slow Query Tail from {{ fluent_bit_conf_file }}"
-          ansible.builtin.lineinfile:
-            path: "{{ fluent_bit_conf_dir }}/{{ fluent_bit_conf_file }}"
-            state: absent
-            line: "@include couchbase/input/in-tail-slow_query.conf"
-
       when: couchbase_slow_query_mode == "exec"
 
     - name: Remove "exec" when mode is "tail"
@@ -71,6 +65,7 @@
         state: present
         line: "@include couchbase/input/in-{{ couchbase_slow_query_mode }}-slow_query.conf"
         insertafter: "@include couchbase/input/in-tail-.*"
+      when: couchbase_slow_query_mode == "exec"
 
     - name: Schedule Query Logger and Create Logrotate Entry
       block:
