@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version="1.1.2"
+version="1.1.3"
 
 _usage() {
   echo -n "${__script} [OPTION]...
@@ -326,7 +326,7 @@ getSlowQueryStatement() {
       }
     )
     FROM system:completed_requests AS cr
-    LET requestTimeMs = STR_TO_MILLIS(STR_TO_UTC(REPLACE(REGEX_REPLACE(REPLACE(REPLACE(REGEX_REPLACE(cr.requestTime, \" [A-Z]{3}$\", ''), ' -', '-'), ' +', '+'), '00$', ':00'), ' ', 'T'))),
+    LET requestTimeMs = STR_TO_MILLIS(STR_TO_UTC(REPLACE(REGEX_REPLACE(REPLACE(REPLACE(REGEX_REPLACE(cr.requestTime, \" [A-Z]{3}$\", ''), ' -', '-'), ' +', '+'), ':?00$', ':00'), ' ', 'T'))),
       serviceTimeMs = ROUND(STR_TO_DURATION(cr.serviceTime) / 1e6),
       elapsedTimeMs = ROUND(STR_TO_DURATION(cr.elapsedTime) / 1e6),
       queueTime = DURATION_TO_STR(STR_TO_DURATION(cr.elapsedTime) - STR_TO_DURATION(cr.serviceTime)),
